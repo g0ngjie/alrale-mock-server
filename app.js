@@ -25,7 +25,9 @@ app.use(async (ctx, next) => {
     debug(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
 
-routes(app);
+module.exports = function (filePath) {
+    routes(app, filePath);
+}
 
 http.createServer(app.callback())
     .listen(8090)

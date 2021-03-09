@@ -20,9 +20,17 @@ const defaultSwagger = {
 
 const swaggerJson = require('./swagger.json')
 
-exports.FmtSwaggerJson = function genSwaggerJson() {
+exports.fmtSwaggerJson = async function (filePath) {
+    if (filePath) {
+        const files = require(filePath)
+        return
+    }
     const publicPath = path.join(__dirname, 'public', 'swagger.json')
     try {
+        const pwd = process.cwd()
+        console.log(pwd, 'pwd');
+        const putPath = path.join(pwd, 'swagger.json')
+        fsExtra.writeFileSync(putPath, JSON.stringify(swaggerJson, '', '\t'))
         fsExtra.writeFileSync(publicPath, JSON.stringify(swaggerJson, '', '\t'))
         debug('swagger.json 加载成功')
     } catch (error) {
@@ -30,14 +38,14 @@ exports.FmtSwaggerJson = function genSwaggerJson() {
     }
 }
 
-exports.GetDefaultRoutes = function() {
+exports.getDefaultRoutes = function () {
     const { paths } = swaggerJson;
     const routes = []
     for (const key in paths) {
         const item = paths[key];
         if (!item) continue
         const isPost = 'post' in item;
-        const method = isPost ? 'post': 'get'
+        const method = isPost ? 'post' : 'get'
         const { responses } = item[method];
         routes.push({
             path: key,
@@ -46,4 +54,9 @@ exports.GetDefaultRoutes = function() {
         })
     }
     return routes
+}
+
+exports.getFileRoutes = function (filePath) {
+    const files = require(filePath)
+    console.log(files, 'files');
 }
