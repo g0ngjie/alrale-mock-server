@@ -1,8 +1,11 @@
 {
   "name": "@alrale/mock-server",
   "version": "1.0.0",
-  "description": "cli",
+  "description": "mock cli",
   "main": "cli.js",
+  "bin": {
+    "mock": "cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,7 +13,12 @@
     "type": "git",
     "url": "git+https://github.com/g0ngjie/alrale-mock-server.git"
   },
-  "keywords": [],
+  "keywords": [
+    "alrale",
+    "cli",
+    "mock",
+    "mock"
+  ],
   "author": "",
   "license": "MIT",
   "bugs": {
