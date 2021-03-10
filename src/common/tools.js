@@ -3,10 +3,8 @@
 const fsExtra = require('fs-extra')
 const path = require('path')
 const fs = require('fs')
-const debug = require('debug')('::')
-debug.enabled = true
-
-const swaggerJson = require('./swagger.json')
+const swaggerJson = require('./swagger.json');
+const { Log } = require('./util');
 
 function createSwaggerJson(files = []) {
     // 声明
@@ -90,39 +88,38 @@ function createSwaggerJson(files = []) {
 
 /**创建模板文件 */
 function createTemplate(src, dst) {
-    fs.stat(src, function (err, stats) {  //stats  该对象 包含文件属性
-        if (err) throw err;
-        if (stats.isFile()) { //如果是个文件则拷贝 
-            let readable = fs.createReadStream(src);//创建读取流
-            let writable = fs.createWriteStream(dst);//创建写入流
-            readable.pipe(writable);
-            debug(`${dst} 模板文件已经创建`)
-        }
-    });
+    return new Promise(resolve => {
+        fs.stat(src, function (err, stats) {  //stats  该对象 包含文件属性
+            if (err) throw err;
+            if (stats.isFile()) { //如果是个文件则拷贝 
+                let readable = fs.createReadStream(src);//创建读取流
+                let writable = fs.createWriteStream(dst);//创建写入流
+                readable.pipe(writable);
+                Log.sys(`${dst} 模板文件已经创建`)
+            }
+            resolve()
+        });
+    })
 }
 
 exports.fmtSwaggerJson = async function (filePath) {
-    const publicPath = path.join(__dirname, 'public', 'swagger.json')
+    const publicPath = path.join(__dirname, '..', '..', 'public', 'swagger.json')
     try {
         if (filePath) {
-            const files = require(filePath)
+            const files = require(filePath);
             const swaggerData = createSwaggerJson(files);
             fsExtra.writeFileSync(publicPath, JSON.stringify(swaggerData, '', '\t'))
-            debug('swagger.json 加载成功')
+            Log.sys('swagger.json 加载成功')
             return
         }
         const putPath = path.join(process.cwd(), 'mock.js')
-        createTemplate(path.join(__dirname, 'mock-template.js'), putPath)
+        await createTemplate(path.join(__dirname, 'mock-template.js'), putPath)
         fsExtra.writeFileSync(publicPath, JSON.stringify(swaggerJson, '', '\t'))
-        debug('swagger.json 加载成功')
+        Log.sys('swagger.json 加载成功')
     } catch (error) {
-        debug('swagger.json 加载失败')
+        Log.sys('swagger.json 加载失败')
         process.exit(1)
     }
-}
-
-exports.getDefaultRoutes = function () {
-    
 }
 
 exports.getFileRoutes = function (filePath) {
@@ -130,7 +127,7 @@ exports.getFileRoutes = function (filePath) {
     if (filePath) {
         const paths = require(filePath);
         for (let i = 0; i < paths.length; i++) {
-            const { 
+            const {
                 path: _path,
                 method: _method,
                 response: _response

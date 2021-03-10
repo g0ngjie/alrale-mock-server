@@ -2,9 +2,8 @@
 
 const Router = require("koa-router");
 const router = new Router();
-const debug = require('debug')(':')
-debug.enabled = true
-const { getFileRoutes, fmtSwaggerJson } = require('./tools')
+const { getFileRoutes, fmtSwaggerJson } = require('./common/tools');
+const { Log } = require("./common/util");
 
 function getRoutes(files) {
   getFileRoutes(files).forEach(route => {
@@ -12,7 +11,7 @@ function getRoutes(files) {
     const m = method.toLowerCase() || 'get'
     router[m](path, function (ctx, next) {
       const { query, body } = ctx.request
-      debug(`${m.toUpperCase()}请求参数: `, m === 'get' ? JSON.stringify(query, '', '\t') : JSON.stringify(body, '', '\t'))
+      Log.info(`${m.toUpperCase()}请求参数: `, m === 'get' ? JSON.stringify(query, '', '\t') : JSON.stringify(body, '', '\t'))
       ctx.body = response || 'Nil'
       next()
     })

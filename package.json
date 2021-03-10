@@ -2,9 +2,9 @@
   "name": "@alrale/mock-server",
   "version": "1.0.0",
   "description": "mock cli",
-  "main": "cli.js",
+  "main": "src/cli.js",
   "bin": {
-    "mock": "cli.js"
+    "mock": "src/cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
