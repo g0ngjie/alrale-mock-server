@@ -29,7 +29,7 @@ exports.fmtSwaggerJson = async function (filePath) {
     try {
         const pwd = process.cwd()
         console.log(pwd, 'pwd');
-        const putPath = path.join(pwd, 'swagger.json')
+        const putPath = path.join(pwd, 'mock.json')
         fsExtra.writeFileSync(putPath, JSON.stringify(swaggerJson, '', '\t'))
         fsExtra.writeFileSync(publicPath, JSON.stringify(swaggerJson, '', '\t'))
         debug('swagger.json 加载成功')
