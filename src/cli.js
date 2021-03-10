@@ -5,6 +5,7 @@ const PKG = require('../package.json');
 const path = require('path')
 const open = require('open');
 
+/**mock服务启动 */
 function startFunc(cmd) {
     let file_path;
     const { port, file } = cmd
@@ -15,9 +16,9 @@ function startFunc(cmd) {
     require('./app')(port, file_path)
 }
 
+/**打开浏览器 */
 function openFunc() {
-    init()
-    open('http://localhost:8091')
+    open('http://localhost:8090')
 }
 
 /* ========== commander ========== */
