@@ -24,7 +24,3 @@ exports.GetIPAdress = function () {
         }
     }
 }
-
-exports.Config = function() {
-
-}
