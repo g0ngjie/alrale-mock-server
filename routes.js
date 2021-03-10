@@ -4,15 +4,10 @@ const Router = require("koa-router");
 const router = new Router();
 const debug = require('debug')(':')
 debug.enabled = true
-const { getDefaultRoutes, getFileRoutes, fmtSwaggerJson } = require('./tools')
+const { getFileRoutes, fmtSwaggerJson } = require('./tools')
 
 function getRoutes(files) {
-  if(files) {
-    getFileRoutes(files)
-  } else {
-    fmtSwaggerJson()
-  }
-  getDefaultRoutes().forEach(route => {
+  getFileRoutes(files).forEach(route => {
     const { path, method, response } = route;
     const m = method.toLowerCase() || 'get'
     router[m](path, function (ctx, next) {
