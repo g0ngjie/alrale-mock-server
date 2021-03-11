@@ -16,9 +16,10 @@ function startFunc(cmd) {
     require('./app')(port, file_path)
 }
 
-/**打开浏览器 */
-function openFunc() {
-    open('http://localhost:8090')
+/**打开设计器 */
+async function openDesign(cmd) {
+    const port = await require('./app')(cmd.port, null, true)
+    open(`http://localhost:${port}`)
 }
 
 /* ========== commander ========== */
@@ -26,18 +27,18 @@ program
     .version(PKG.version, '-v, -version')
 
 program
-    .command('open')
-    .alias('o')
-    .option('-p, --port', '端口号')
-    .description('打开浏览器')
-    .action(openFunc);
-
-program
     .command('start')
     .option('-p, --port <port>', '端口号')
     .option('-f, --file <file_name>', '加载Mock文件')
     .description('启动Mock服务')
     .action(startFunc);
+
+program
+    .command('design')
+    .alias('d')
+    .option('-p, --port <port>', '端口号')
+    .description('Mock数据设计器')
+    .action(openDesign)
 
 program
     .parse(process.argv);

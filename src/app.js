@@ -5,6 +5,7 @@ const json = require('koa-json');
 const bodyparser = require('koa-bodyparser');
 const http = require('http');
 const path = require('path');
+const koastatic = require("koa-static")
 const routes = require('./routes');
 const { Log, GetIPAdress } = require('./common/util');
 
@@ -14,19 +15,30 @@ app.use(bodyparser({
     enableTypes: ['json', 'form', 'text']
 }));
 app.use(json());
-app.use(require("koa-static")(path.join(__dirname, '..', 'public')));
 
 // logger
 app.use(async (ctx, next) => {
     const start = new Date();
     await next();
     const ms = new Date() - start;
-    if (ctx.url.startsWith('/swagger-ui')) return
-    debug(`${ctx.method} ${ctx.url} - ${ms}ms`);
+    if (
+        // swagger
+        ctx.url.startsWith('/swagger') ||
+        ctx.url.startsWith('/favicon') ||
+        // design
+        ctx.url.startsWith('/css') ||
+        ctx.url.startsWith('/js') ||
+        ctx.url.startsWith('/fonts')
+    ) return
+    Log.info(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
 
-module.exports = async function (p, filePath) {
-    await routes(app, filePath);
+module.exports = async function (p, filePath, isDesign = false) {
+    if (!isDesign) {
+        app.use(koastatic(path.join(__dirname, '..', 'public', 'swagger')));
+        await routes(app, filePath);
+    } else app.use(koastatic(path.join(__dirname, '..', 'public', 'design')));
+
     const PORT = p || 8090
     http.createServer(app.callback())
         .listen(PORT)
@@ -34,5 +46,6 @@ module.exports = async function (p, filePath) {
             Log.sys(`http://${GetIPAdress()}:${PORT}`)
             Log.sys(`http://localhost:${PORT}`)
         });
+    return PORT
 }
 

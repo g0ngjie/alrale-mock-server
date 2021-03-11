@@ -103,7 +103,7 @@ function createTemplate(src, dst) {
 }
 
 exports.fmtSwaggerJson = async function (filePath) {
-    const publicPath = path.join(__dirname, '..', '..', 'public', 'swagger.json')
+    const publicPath = path.join(__dirname, '..', '..', 'public', 'swagger', 'swagger.json')
     try {
         if (filePath) {
             const files = require(filePath);

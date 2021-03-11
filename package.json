@@ -6,9 +6,10 @@
   "bin": {
     "mock": "src/cli.js"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "files": [
+    "src",
+    "public"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/g0ngjie/alrale-mock-server.git"
