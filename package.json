@@ -1,6 +1,6 @@
 {
   "name": "@alrale/mock-server",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "mock cli",
   "main": "src/cli.js",
   "bin": {
