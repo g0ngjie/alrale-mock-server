@@ -37,7 +37,7 @@ program
     .command('design')
     .alias('d')
     .option('-p, --port <port>', '端口号')
-    .description('Mock数据设计器')
+    .description('设计器')
     .action(openDesign)
 
 program
