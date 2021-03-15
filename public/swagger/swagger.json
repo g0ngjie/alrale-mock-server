@@ -10,47 +10,16 @@
 		"http"
 	],
 	"paths": {
-		"/get/users": {
-			"get": {
-				"summary": "获取用户列表",
-				"tags": [],
-				"produces": [
-					"application/json"
-				],
-				"responses": {
-					"200": {
-						"description": "{\"ok\":true,\"data\":{\"list\":[{\"name\":\"zhangsan\",\"age\":20},{\"name\":\"lisi\",\"age\":23}]}}"
-					},
-					"404": {
-						"description": "接口连接错误"
-					}
-				},
-				"parameters": [
-					{
-						"in": "query",
-						"name": "start",
-						"type": "number",
-						"description": ""
-					},
-					{
-						"in": "query",
-						"name": "limit",
-						"type": "number",
-						"description": ""
-					}
-				]
-			}
-		},
-		"/post/saveUser": {
+		"/bux-thirdsystem-api/web/scenario/v2/scenario/statistics": {
 			"post": {
-				"summary": "添加用户",
+				"summary": "剧本统计接⼝",
 				"tags": [],
 				"produces": [
 					"application/json"
 				],
 				"responses": {
 					"200": {
-						"description": "{\"ok\":true}"
+						"description": "{\"code\":\"000000\",\"describe\":\"请求成功\",\"data\":{\"score\":100,\"compTimes\":10,\"compSucTimes\":5,\"cost\":99.99,\"cpc\":99.99,\"cpa\":99.99,\"cpm\":99.99,\"cvr\":0.5,\"pv\":[{\"date\":\"2021-3-1\",\"data\":3},{\"date\":\"2021-2-28\",\"data\":4}],\"uv\":[{\"date\":\"2021-3-1\",\"data\":3},{\"date\":\"2021-2-28\",\"data\":4}],\"price\":99.99,\"budgetAmount\":99.99,\"balance\":99.99,\"totPv\":100,\"totUv\":100}}"
 					},
 					"404": {
 						"description": "接口连接错误"
@@ -65,11 +34,7 @@
 							"type": "object",
 							"required": [],
 							"properties": {
-								"user": {
-									"type": "string",
-									"description": ""
-								},
-								"age": {
+								"scenarioId": {
 									"type": "number",
 									"description": ""
 								}
