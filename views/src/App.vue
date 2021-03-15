@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="box">
-        <Router v-for="(item, i) in list" :key="i"/>
+      <Router v-for="(item, i) in list" :key="i" />
       <el-button class="btn" @click="handleAdd">添加</el-button>
     </div>
   </div>
