@@ -105,5 +105,5 @@ dist
 
 package-lock.json
 yarn.lock
-public/swagger.json
+public/swagger/swagger.json
 test.js

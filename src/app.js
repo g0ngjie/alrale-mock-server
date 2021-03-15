@@ -6,6 +6,7 @@ const bodyparser = require('koa-bodyparser');
 const http = require('http');
 const path = require('path');
 const koastatic = require("koa-static")
+const cors = require('koa2-cors');
 const routes = require('./routes');
 const { Log, GetIPAdress } = require('./common/util');
 
@@ -15,6 +16,7 @@ app.use(bodyparser({
     enableTypes: ['json', 'form', 'text']
 }));
 app.use(json());
+app.use(cors());
 
 // logger
 app.use(async (ctx, next) => {
