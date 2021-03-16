@@ -1,6 +1,7 @@
-import "./App.css";
+import "./App.scss";
 import React from "react";
 import SortableTable from "./components/Table/index";
+import HeadInfo from "./components/HeadInfo/index";
 
 export default class App extends React.Component {
   constructor() {
@@ -8,7 +9,10 @@ export default class App extends React.Component {
   }
   render() {
     return (<div className="container">
-      <SortableTable></SortableTable>
+      <div className="columns">
+        <HeadInfo></HeadInfo>
+        <SortableTable></SortableTable>
+      </div>
     </div>);
   }
 }
