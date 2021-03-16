@@ -12,10 +12,29 @@ html, body {
   padding: 0;
   height: 100%;
   width: 100%;
-  background-color: #282c34;
+  /* background-color: #282c34; */
+  animation: backColor 50s infinite;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+@keyframes backColor {
+  0% {
+      background: #9b59b6;
+  }
+  25% {
+      background: #f1c40f;
+  }
+  50% {
+      background: #3498db;
+  }
+  75% {
+      background: #1abc9c;
+  }
+  100% {
+      background: #9b59b6;
+  }
 }
