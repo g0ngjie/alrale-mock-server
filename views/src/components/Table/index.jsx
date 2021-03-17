@@ -15,7 +15,7 @@ const DragHandle = sortableHandle(() => (
 
 const columns = [
   {
-    title: "Sort",
+    title: "#",
     dataIndex: "sort",
     width: 30,
     render: () => <DragHandle />,
