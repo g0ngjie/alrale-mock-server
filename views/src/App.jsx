@@ -4,7 +4,7 @@ import SortableTable from "./components/Table/index";
 import HeadInfo from "./components/HeadInfo/index";
 import RouterForm from "./components/Router/index";
 import { headerInfos } from "./utils/data";
-import { Button } from "antd";
+import { Button, Affix } from "antd";
 import { AlignCenterOutlined } from "@ant-design/icons";
 
 export default class App extends React.Component {
@@ -25,24 +25,11 @@ export default class App extends React.Component {
 
   setRows(row) {
     const _list = this.state.list;
-    const newList = [];
-    console.log(_list.length, '_list.length');
-    if (_list.length === 0) {
-      newList.push({ ...row, index: Date.now() })
-      this.setState({ list: newList });
-    } else {
-      for (let i = 0; i < _list.length; i++) {
-        const item = _list[i];
-        newList.push({ ...item, index: Date.now() });
-      }
-      newList.push({ ...row, index: row.index + _list.length })
-      // const newList = _list.map(item => item.index = Date.now())
-      // console.log(newList);
-      // newList.push({ ...row, index: Date.now() });
-      // _list.push({ ...row, index: Date.now() });
-      console.log(newList, 'newList');
-      this.setState({ list: newList });
-    }
+    this.setState({ list: [..._list, row] });
+  }
+
+  updateRows(rows) {
+    this.setState({ list: rows })
   }
 
   componentDidMount() {
@@ -55,8 +42,12 @@ export default class App extends React.Component {
     return (
       <div className="container">
         <div className="columns">
+          <Affix style={{ position: 'fixed', top: 25, right: 25 }}>
+            <Button type="primary" danger>Sync</Button>
+            <Button type="primary" style={{ marginLeft: 20 }}>Download</Button>
+          </Affix>
           <HeadInfo infos={this.state.infos} />
-          <SortableTable list={this.state.list} />
+          <SortableTable updateRows={(list) => this.updateRows(list)} list={this.state.list} />
           <Button
             size="small"
             type="ghost"

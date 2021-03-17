@@ -18,55 +18,22 @@ const columns = [
     title: "Sort",
     dataIndex: "sort",
     width: 30,
-    className: "drag-visible",
     render: () => <DragHandle />,
   },
   {
     title: "Path",
     dataIndex: "path",
-    className: "drag-visible",
   },
   {
     title: "Method",
     dataIndex: "method",
-  },
-  {
-    title: "Address",
-    dataIndex: "address",
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    index: 0,
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    index: 1,
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park",
-    index: 2,
-  },
+  }
 ];
 
 const SortableItem = sortableElement((props) => <tr {...props} />);
 const SortableContainer = sortableContainer((props) => <tbody {...props} />);
 
 export default class SortableTable extends React.Component {
-  state = {
-    list: [],
-  };
 
   onSortEnd = ({ oldIndex, newIndex }) => {
     const { list } = this.props;
@@ -76,8 +43,7 @@ export default class SortableTable extends React.Component {
         oldIndex,
         newIndex
       ).filter((el) => !!el);
-      console.log("Sorted items: ", newData);
-      this.setState({ list: newData });
+      this.props.updateRows(newData)
     }
   };
 
@@ -100,28 +66,14 @@ export default class SortableTable extends React.Component {
     return <SortableItem index={index} {...restProps} />;
   };
 
-  componentDidMount() {
-    this.setState({ list: this.props.list })
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // console.log(nextProps, 'pro');
-    this.setState({ list: nextProps.list })
-  }
-
   render() {
-    // const { list } = this.state
-
     return (
       <div className="table-container">
         <Table
           pagination={false}
-          dataSource={this.state.list}
+          dataSource={this.props.list}
           columns={columns}
-          // rowKey="index"
-          rowKey={function(record) {
-            return record.index + Date.now()
-          }}
+          rowKey="index"
           components={{
             body: {
               wrapper: this.DraggableContainer,

@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, Modal, Radio, Button } from "antd";
+import { Form, Input, Modal, Radio } from "antd";
 
 export default class RouterForm extends React.Component {
   form = React.createRef();
@@ -12,20 +12,15 @@ export default class RouterForm extends React.Component {
   }
 
   handleOk = () => {
-    // console.log(this.form, "form");
     const row = this.form.current.getFieldsValue(["method", "path"]);
-    this.props.setRows({...row, index: Date.now()});
+    this.props.setRows({ ...row, index: Date.now() });
+    this.form.current.resetFields()
     this.setIsModalVisible(false);
   };
 
   handleCancel = () => {
     this.setIsModalVisible(false);
   };
-
-  onValuesChange(changedValues, allValues) {
-    //   console.log(changedValues, allValues)
-    // this.setState({ data: {...allValues} });
-  }
 
   render() {
     return (
@@ -46,11 +41,6 @@ export default class RouterForm extends React.Component {
               span: 17,
             }}
             layout="horizontal"
-            onValuesChange={this.onValuesChange}
-            // initialValues={{
-            //     size: 'small',
-            // }}
-            // size='small'
           >
             <Form.Item label="Path" name="path">
               <Input placeholder="路由地址" />
