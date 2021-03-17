@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Table, Tag } from "antd";
 import React from "react";
 import {
   sortableContainer,
@@ -25,12 +25,27 @@ const columns = [
   }, {
     title: "Method",
     dataIndex: "method",
+    render: (method, index) => {
+      const _conf = {
+        'GET': '#61affe',
+        'POST': '#49cc90',
+        'PUT': '#fca130',
+        'DELETE': '#F56C6C',
+      }
+      return <Tag style={{ color: _conf[method.toUpperCase()] }} key={index}> {method.toUpperCase()} </Tag>
+    },
   }, {
     title: "Tag",
-    dataIndex: "summary",
+    dataIndex: "tag",
+    render: (tag, index) => (
+      <Tag color="cyan" key={index}>
+        {tag.toUpperCase()}
+      </Tag>
+    ),
   }, {
     title: "概要",
     dataIndex: "summary",
+    ellipsis: true,
   }, {
     title: 'operation',
     dataIndex: 'operation',

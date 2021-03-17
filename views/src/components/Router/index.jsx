@@ -3,7 +3,6 @@ import { Form, Input, Modal, Radio, Select } from "antd";
 
 export default class RouterForm extends React.Component {
 
-
   state = {
     form: React.createRef()
   }
@@ -28,11 +27,9 @@ export default class RouterForm extends React.Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    let init = {}
     if (props.isRouterEdit) {
       const { method, path, tag, summary } = props.routerValues
-      init = { method, path, tag, summary }
-      state.form.current.setFieldsValue(init);
+      state.form.current.setFieldsValue({ method, path, tag, summary });
     }
     return null
   }

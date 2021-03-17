@@ -25,7 +25,12 @@ export default class HeadInfo extends React.Component {
                 <br />
                 <Text>[Base URL: {baseUrl}]</Text>
                 <Paragraph>{info.description}</Paragraph>
-                <InfoForm setModalShow={(bool) => this.setModalShow(bool)} isShow={this.state.isShow} />
+                <InfoForm
+                    setModalShow={(bool) => this.setModalShow(bool)}
+                    isShow={this.state.isShow}
+                    infos={this.props.infos}
+                    setInfos={this.props.setInfos}
+                />
             </div>
         )
     }

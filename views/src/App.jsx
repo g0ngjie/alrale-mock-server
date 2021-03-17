@@ -14,7 +14,7 @@ export default class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      infos: { info: {} },
+      infos: headerInfos,
       isShow: false,
       list: [],
       tags: [{ name: 'Default', focus: true, visible: false }],
@@ -93,10 +93,31 @@ export default class App extends React.Component {
     this.setState({ list: rows })
   }
 
-  componentDidMount() {
-    this.setState({
-      infos: headerInfos,
-    });
+  setInfos(infos) {
+    this.setState({ infos: { ...this.state.infos, ...infos } })
+  }
+
+  /**下载 */
+  handleDownload() {
+    const { infos, list } = this.state
+    const swagger = { ...infos, paths: {} }
+    list.forEach(router => {
+      const { path, method, tag, summary } = router
+      swagger.paths[path] = {
+        [method]: {
+          summary,
+          tags: [tag],
+          produces: ["application/json"],
+          parameters: [{}],
+          responses: {}
+        }
+      }
+    })
+    const element = document.createElement('a')
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,module.exports = ' + JSON.stringify(swagger, null, '\t'))
+    element.setAttribute('download', 'mock.js')
+    element.style.display = 'none'
+    element.click()
   }
 
   render() {
@@ -105,9 +126,12 @@ export default class App extends React.Component {
         <div className="columns">
           <Affix style={{ position: 'fixed', top: 25, right: 25 }}>
             <Button type="primary" danger>Sync</Button>
-            <Button type="primary" style={{ marginLeft: 20 }}>Download</Button>
+            <Button type="primary" style={{ marginLeft: 20 }} onClick={() => this.handleDownload()}>Download</Button>
           </Affix>
-          <HeadInfo infos={this.state.infos} />
+          <HeadInfo
+            infos={this.state.infos}
+            setInfos={(infos) => this.setInfos(infos)}
+          />
           <TagsGroup
             tags={this.state.tags}
             setTags={(tags) => this.setTags(tags)}
