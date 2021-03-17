@@ -44,6 +44,7 @@ export default class TagsGroup extends React.Component {
                 {
                     this.props.tags.map((tag, index) => {
                         return <Popover
+                            key={index}
                             size="small"
                             content={<a onClick={() => this.props.removeTag(index)}>remove</a>}
                             trigger="hover"
@@ -51,7 +52,6 @@ export default class TagsGroup extends React.Component {
                             onVisibleChange={(bool) => this.props.tagVisibleChange(index, bool)}
                         >
                             <Button
-                                key={index}
                                 type={tag.focus && 'primary'}
                                 size="small"
                                 style={{ marginRight: 5 }}

@@ -17,17 +17,52 @@ export default class App extends React.Component {
       infos: { info: {} },
       isShow: false,
       list: [],
-      tags: [{ name: 'Default', focus: true, visible: false }]
+      tags: [{ name: 'Default', focus: true, visible: false }],
+      routerValues: null,
+      isRouterEdit: false,
+      editRouterIndex: null
     };
   }
 
   setModalShow(bool) {
-    this.setState({ isShow: bool });
+    this.setState({ isShow: bool, isRouterEdit: false, routerValues: null });
+  }
+
+  removeRow(index) {
+    const { list } = this.state
+    list.splice(index, 1)
+    const newList = list.map(item => {
+      return {
+        ...item,
+        index: item.index + Math.random().toString().substr(2, 3)
+      }
+    })
+    this.setState({ list: newList })
+  }
+
+  editRow(index) {
+    const { list } = this.state
+    this.setState({
+      routerValues: list[index],
+      isRouterEdit: true,
+      editRouterIndex: index
+    }, () => this.setState({ isShow: true }))
   }
 
   setRows(row) {
-    const _list = this.state.list;
-    this.setState({ list: [..._list, row] });
+    const { list: _list, isRouterEdit, editRouterIndex } = this.state;
+    row.remove = (index) => this.removeRow(index)
+    row.edit = (index) => this.editRow(index)
+    if (isRouterEdit) {
+      _list[editRouterIndex] = row
+      const newList = _list.map(item => {
+        return {
+          ...item,
+          index: item.index + Math.random().toString().substr(2, 3)
+        }
+      })
+      this.setState({ list: newList });
+    } else this.setState({ list: [..._list, row] });
   }
 
   setTags(tagName) {
@@ -95,9 +130,12 @@ export default class App extends React.Component {
           />
           <RouterForm
             list={this.state.list}
+            tags={this.state.tags}
             setRows={(list) => this.setRows(list)}
             setModalShow={(bool) => this.setModalShow(bool)}
             isShow={this.state.isShow}
+            isRouterEdit={this.state.isRouterEdit}
+            routerValues={this.state.routerValues}
           />
         </div>
       </div>

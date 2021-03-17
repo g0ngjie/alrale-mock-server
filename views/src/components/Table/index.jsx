@@ -19,14 +19,27 @@ const columns = [
     dataIndex: "sort",
     width: 30,
     render: () => <DragHandle />,
-  },
-  {
+  }, {
     title: "Path",
     dataIndex: "path",
-  },
-  {
+  }, {
     title: "Method",
     dataIndex: "method",
+  }, {
+    title: "Tag",
+    dataIndex: "summary",
+  }, {
+    title: "概要",
+    dataIndex: "summary",
+  }, {
+    title: 'operation',
+    dataIndex: 'operation',
+    render: (_, record, index) => {
+      return (<>
+        <a onClick={() => record.remove(index)} style={{ marginRight: 10, color: '#F56C6C' }} >Delete</a>
+        <a onClick={() => record.edit(index)}>Edit</a>
+      </>)
+    }
   }
 ];
 

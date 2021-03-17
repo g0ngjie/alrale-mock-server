@@ -1,21 +1,22 @@
 import React from "react";
-import { Form, Input, Modal, Radio } from "antd";
+import { Form, Input, Modal, Radio, Select } from "antd";
 
 export default class RouterForm extends React.Component {
-  form = React.createRef();
+
 
   state = {
-    data: {},
-  };
+    form: React.createRef()
+  }
+
   setIsModalVisible(val) {
     this.props.setModalShow(val);
   }
 
   async handleOk() {
     try {
-      const values = await this.form.current.validateFields();
+      const values = await this.state.form.current.validateFields();
       this.props.setRows({ ...values, index: Date.now() });
-      this.form.current.resetFields()
+      this.state.form.current.resetFields()
       this.setIsModalVisible(false);
     } catch (err) {
       return
@@ -25,6 +26,16 @@ export default class RouterForm extends React.Component {
   handleCancel = () => {
     this.setIsModalVisible(false);
   };
+
+  static getDerivedStateFromProps(props, state) {
+    let init = {}
+    if (props.isRouterEdit) {
+      const { method, path, tag, summary } = props.routerValues
+      init = { method, path, tag, summary }
+      state.form.current.setFieldsValue(init);
+    }
+    return null
+  }
 
   render() {
     return (
@@ -37,7 +48,7 @@ export default class RouterForm extends React.Component {
           onCancel={this.handleCancel}
         >
           <Form
-            ref={this.form}
+            ref={this.state.form}
             labelCol={{
               span: 4,
             }}
@@ -45,9 +56,7 @@ export default class RouterForm extends React.Component {
               span: 17,
             }}
             layout="horizontal"
-            initialValues={{
-              method: 'get'
-            }}
+            initialValues={{ method: 'get', tag: 'Default' }}
           >
             <Form.Item label="Path" name="path" rules={[{ required: true, message: '路由地址' }]}>
               <Input placeholder="路由地址" />
@@ -59,6 +68,18 @@ export default class RouterForm extends React.Component {
                 <Radio.Button value="put">PUT</Radio.Button>
                 <Radio.Button value="delete">DELETE</Radio.Button>
               </Radio.Group>
+            </Form.Item>
+            <Form.Item label="Tag" name="tag" rules={[{ required: true, message: '路由地址' }]}>
+              <Select style={{ width: 120 }} >
+                {
+                  this.props.tags.map((tag, index) => {
+                    return <Select.Option key={index} value={tag.name}>{tag.name}</Select.Option>
+                  })
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item label="概要" name="summary">
+              <Input.TextArea placeholder="概要" />
             </Form.Item>
           </Form>
         </Modal>
