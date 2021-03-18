@@ -21,7 +21,8 @@ export default class App extends React.Component {
     this.state = {
       infos: headerInfos,
       isShow: false,
-      list: [],
+      list: [], // table 数据
+      cacheTables: [], // 缓存table数据
       tags: [{ name: 'Default', focus: true, visible: false }],
       routerValues: null,
       isRouterEdit: false,
@@ -44,7 +45,7 @@ export default class App extends React.Component {
         index: item.index + Math.random().toString().substr(2, 3)
       }
     })
-    this.setState({ list: newList })
+    this.setState({ list: newList, cacheTables: newList })
   }
 
   editRow(index) {
@@ -68,8 +69,8 @@ export default class App extends React.Component {
           index: item.index + Math.random().toString().substr(2, 3)
         }
       })
-      this.setState({ list: newList });
-    } else this.setState({ list: [..._list, row] });
+      this.setState({ list: newList, cacheTables: newList });
+    } else this.setState({ list: [..._list, row], cacheTables: [..._list, row] });
   }
 
   setTags(tagName) {
@@ -78,10 +79,19 @@ export default class App extends React.Component {
     this.setState({ tags })
   }
 
-  updateTagsStatus(index) {
-    const { tags } = this.state
+  updateTagsStatus(_, index) {
+    const { tags, cacheTables } = this.state
     tags[index].focus = !tags[index].focus
-    this.setState({ tags })
+
+    // 过滤列表
+    const filterList = tags.filter(tag => tag.focus).map(tag => tag.name);
+    const newList = [];
+    cacheTables.forEach(row => {
+      if (filterList.includes(row.tag)) {
+        newList.push({ ...row, index: uniqueId() })
+      }
+    })
+    this.setState({ list: newList, tags })
   }
 
   removeTag(index) {
@@ -108,8 +118,8 @@ export default class App extends React.Component {
   handleDownload() {
     const { infos, list, host } = this.state
     const swagger = { ...infos, host: `${host}${infos.host}`, paths: {} }
-    list.forEach(router => {
-      const { path, method, tag, summary } = router
+    list.forEach(row => {
+      const { path, method, tag, summary } = row
       swagger.paths[path] = {
         [method]: {
           summary,
@@ -212,7 +222,7 @@ export default class App extends React.Component {
             loading={this.state.loading}
             tags={this.state.tags}
             setTags={(tags) => this.setTags(tags)}
-            updateTagsStatus={(index) => this.updateTagsStatus(index)}
+            updateTagsStatus={(tag, index) => this.updateTagsStatus(tag, index)}
             removeTag={(index) => this.removeTag(index)}
             tagVisibleChange={(index, bool) => this.tagVisibleChange(index, bool)}
           />

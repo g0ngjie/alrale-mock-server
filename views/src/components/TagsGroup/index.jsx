@@ -20,9 +20,14 @@ export default class TagsGroup extends React.Component {
         const { keyCode, target } = e
         if (keyCode === 13 && target.value) {
             this.props.setTags(target.value)
-            this.setState({ isEdit: false })
-            this.setState({ tagName: '' })
+            this.setState({ isEdit: false, tagName: '' })
         }
+    }
+
+    handleBlur(e) {
+        const { target } = e
+        if (target.value) this.props.setTags(target.value)
+        this.setState({ isEdit: false, tagName: '' })
     }
 
     handleChange(e) {
@@ -34,8 +39,8 @@ export default class TagsGroup extends React.Component {
     }
 
     // 选中
-    handleCheck(index) {
-        this.props.updateTagsStatus(index)
+    handleCheck(tag, index) {
+        this.props.updateTagsStatus(tag, index)
     }
 
     render() {
@@ -56,7 +61,7 @@ export default class TagsGroup extends React.Component {
                                 type={tag.focus && 'primary'}
                                 size="small"
                                 style={{ marginRight: 5 }}
-                                onClick={() => this.handleCheck(index)}
+                                onClick={() => this.handleCheck(tag, index)}
                             >{tag.name}</Button>
                         </Popover>
                     })
@@ -68,6 +73,7 @@ export default class TagsGroup extends React.Component {
                                 ref={this.inpRef}
                                 size="small"
                                 onKeyDown={(e) => this.handleKeyDown(e)}
+                                onBlur={(e) => this.handleBlur(e)}
                                 placeholder="tag name"
                                 onChange={(e) => this.handleChange(e)}
                                 style={{ width: 80, marginRight: 5 }}
