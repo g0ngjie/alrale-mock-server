@@ -1,19 +1,23 @@
 import "./App.scss";
 import React from "react";
-import { } from "@alrale";
+import { uniqueId } from "@alrale/common-lib";
 import SortableTable from "./components/Table/index";
 import HeadInfo from "./components/HeadInfo/index";
 import RouterForm from "./components/Router/index";
 import TagsGroup from "./components/TagsGroup";
 import { headerInfos } from "./utils/data";
-import { Button, Upload } from "antd";
-import { AlignCenterOutlined, UploadOutlined } from "@ant-design/icons";
+import { Button, Upload, message } from "antd";
+import { AlignCenterOutlined, UploadOutlined, DownloadOutlined } from "@ant-design/icons";
 
 export default class App extends React.Component {
   state = {};
 
   constructor() {
     super();
+
+    const isDev = process.env.NODE_ENV === 'development'
+    let host = '';
+    if (isDev) host = 'http://localhost:8090'
     this.state = {
       infos: headerInfos,
       isShow: false,
@@ -23,7 +27,7 @@ export default class App extends React.Component {
       isRouterEdit: false,
       editRouterIndex: null,
       loading: false,
-      host: ''
+      host,
     };
   }
 
@@ -123,37 +127,54 @@ export default class App extends React.Component {
     element.click()
   }
 
-  handleUpload(info) {
+  handleBeforeUpload(file) {
     this.setState({ loading: true })
+    const index = file.name.lastIndexOf(".");
+    //获取后缀
+    const ext = file.name.substr(index + 1);
+    if (ext != 'js') {
+      message.error('请上传js文件')
+      this.setState({ loading: false })
+      return Promise.reject()
+    }
+    return Promise.resolve()
+  }
+
+  handleUpload(info) {
     if (info.file.status !== 'uploading') {
-      console.log(info.file, info.fileList);
+      // console.log(info.file, info.fileList);
     }
     if (info.file.status === 'done') {
       this.setState({ loading: false })
       const { file } = info
       const { ok, data } = file.response
       if (ok) {
-        const { swagger, info, schemes, paths = [] } = data;
-        paths.forEach(router => {
-          const { path, method, tag, summary } = router
-        })
-        this.setState({ infos: { swagger, info, schemes }, list: [] }, () => {
-          this.setState()
-        })
-        // this.setRows
+        const { swagger, info, schemes, paths = {} } = data;
+        const list = [];
+        const tagList = new Set()
+        for (const path in paths) {
+          const router = { path, index: uniqueId() }
+          if (Object.hasOwnProperty.call(paths, path)) {
+            const item = paths[path];
+            for (const method in item) {
+              if (Object.hasOwnProperty.call(item, method)) {
+                const { tags, produces, parameters, responses, summary } = item[method];
+                router.summary = summary
+                router.method = method
+                router.tag = tags[0]
+                tagList.add(tags[0])
+              }
+            }
+          }
+          list.push(router)
+        }
+        const tags = []
+        tagList.forEach(tag => tags.push({ name: tag, focus: true, visible: false }))
+        this.setState({ infos: { swagger, info, schemes }, list, tags })
       }
     } else if (info.file.status === 'error') {
       console.log('error')
     }
-  }
-
-  async init() {
-    const { ok, data } = (await fetch('http://localhost:8090/port')).json()
-    if (ok) this.setState({ host: `http://localhost:${data}` })
-  }
-
-  componentDidMount() {
-    this.init()
   }
 
   render() {
@@ -161,11 +182,27 @@ export default class App extends React.Component {
       <div className="container">
         <div className="columns">
           <div style={{ display: 'flex', position: 'fixed', top: 25, right: 25 }}>
-            <Upload onPreview name="file" method="POST" action={`${this.state.host}/upload`} onChange={(info) => this.handleUpload(info)}>
-              <Button disabled={this.state.loading} type="primary" icon={<UploadOutlined />}>Upload</Button>
+            <Upload
+              beforeUpload={(file) => this.handleBeforeUpload(file)}
+              name="file"
+              method="POST"
+              action={`${this.state.host}/upload`}
+              onChange={(info) => this.handleUpload(info)}
+            >
+              <Button
+                disabled={this.state.loading}
+                type="primary"
+                icon={<UploadOutlined />}
+              />
             </Upload>
-            <Button disabled={this.state.loading} type="primary" style={{ marginLeft: 20 }} danger>Sync</Button>
-            <Button disabled={this.state.loading} type="primary" style={{ marginLeft: 20 }} onClick={() => this.handleDownload()}>Download</Button>
+            {/* <Button disabled={this.state.loading} type="primary" style={{ marginLeft: 20 }} danger>Sync</Button> */}
+            <Button
+              disabled={this.state.loading}
+              type="primary"
+              style={{ marginLeft: 10 }}
+              icon={<DownloadOutlined />}
+              onClick={() => this.handleDownload()}
+            />
           </div>
           <HeadInfo
             loading={this.state.loading}
