@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Input, Modal, Radio, Select } from "antd";
+import { uniqueId } from "@alrale/common-lib";
 
 export default class RouterForm extends React.Component {
 
@@ -14,7 +15,7 @@ export default class RouterForm extends React.Component {
   async handleOk() {
     try {
       const values = await this.state.form.current.validateFields();
-      this.props.setRows({ ...values, index: Date.now() });
+      this.props.setRows({ ...values, index: uniqueId() });
       this.state.form.current.resetFields()
       this.setIsModalVisible(false);
     } catch (err) {

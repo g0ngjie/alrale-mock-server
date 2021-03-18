@@ -1,7 +1,6 @@
 import { Typography, Button } from 'antd';
 import { LeftSquareOutlined } from '@ant-design/icons';
 import React from 'react'
-import './index.scss'
 const { Title, Paragraph, Text } = Typography
 import InfoForm from "./Form";
 export default class HeadInfo extends React.Component {
@@ -16,10 +15,10 @@ export default class HeadInfo extends React.Component {
         const { infos } = this.props
         const { info, host: baseUrl } = infos
         return (
-            <div className="header-info-container">
-                <div className="header-title-container">
+            <div style={{ width: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Title level={2}>{info.title}</Title>
-                    <Button disabled={this.props.loading} size="small" className="btn" onClick={() => this.setState({ isShow: true })} icon={<LeftSquareOutlined />} />
+                    <Button disabled={this.props.loading} size="small" style={{ marginLeft: '30px' }} onClick={() => this.setState({ isShow: true })} icon={<LeftSquareOutlined />} />
                 </div>
                 <Text type="secondary">Version: {info.version}</Text>
                 <br />

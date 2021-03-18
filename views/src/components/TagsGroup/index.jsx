@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Input, Popover } from "antd";
 import { BorderLeftOutlined, CheckSquareOutlined } from "@ant-design/icons";
-import "./index.scss"
+
 export default class TagsGroup extends React.Component {
 
     inpRef = React.createRef(null)
@@ -40,7 +40,7 @@ export default class TagsGroup extends React.Component {
 
     render() {
         return (
-            <div className="tags-group-container">
+            <div style={{ width: '100%', display: 'flex', marginBottom: '10px' }}>
                 {
                     this.props.tags.map((tag, index) => {
                         return <Popover

@@ -1,6 +1,6 @@
-import "./App.scss";
+import "./App.css";
 import React from "react";
-import { uniqueId } from "@alrale/common-lib";
+import { uniqueId, stringExtension } from "@alrale/common-lib";
 import SortableTable from "./components/Table/index";
 import HeadInfo from "./components/HeadInfo/index";
 import RouterForm from "./components/Router/index";
@@ -106,8 +106,8 @@ export default class App extends React.Component {
 
   /**下载 */
   handleDownload() {
-    const { infos, list } = this.state
-    const swagger = { ...infos, paths: {} }
+    const { infos, list, host } = this.state
+    const swagger = { ...infos, host: `${host}${infos.host}`, paths: {} }
     list.forEach(router => {
       const { path, method, tag, summary } = router
       swagger.paths[path] = {
@@ -129,10 +129,9 @@ export default class App extends React.Component {
 
   handleBeforeUpload(file) {
     this.setState({ loading: true })
-    const index = file.name.lastIndexOf(".");
-    //获取后缀
-    const ext = file.name.substr(index + 1);
-    if (ext != 'js') {
+    // 判断后缀
+    const flag = stringExtension(file.name, '.', 'js')
+    if (!flag) {
       message.error('请上传js文件')
       this.setState({ loading: false })
       return Promise.reject()
@@ -180,7 +179,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div className="container">
-        <div className="columns">
+        <div className="container-columns">
           <div style={{ display: 'flex', position: 'fixed', top: 25, right: 25 }}>
             <Upload
               beforeUpload={(file) => this.handleBeforeUpload(file)}

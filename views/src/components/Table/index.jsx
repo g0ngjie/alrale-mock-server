@@ -7,7 +7,6 @@ import {
 } from "react-sortable-hoc";
 import { MenuOutlined } from "@ant-design/icons";
 import arrayMove from "array-move";
-import "./index.scss";
 
 const DragHandle = sortableHandle(() => (
   <MenuOutlined style={{ cursor: "grab", color: "#999" }} />
@@ -96,7 +95,7 @@ export default class SortableTable extends React.Component {
 
   render() {
     return (
-      <div className="table-container">
+      <div style={{ width: '100%' }}>
         <Table
           loading={this.props.loading}
           pagination={false}
