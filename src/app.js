@@ -8,6 +8,7 @@ const path = require('path');
 const koastatic = require("koa-static")
 const cors = require('koa2-cors');
 const routes = require('./routes');
+const designRoutes = require('./designRoutes');
 const { Log, GetIPAdress } = require('./common/util');
 
 const app = new Koa();
@@ -39,7 +40,10 @@ module.exports = async function (p, filePath, isDesign = false) {
     if (!isDesign) {
         app.use(koastatic(path.join(__dirname, '..', 'public', 'swagger')));
         await routes(app, filePath);
-    } else app.use(koastatic(path.join(__dirname, '..', 'public', 'design')));
+    } else {
+        app.use(koastatic(path.join(__dirname, '..', 'public', 'design')));
+        designRoutes(app)
+    }
 
     const PORT = p || 8090
     http.createServer(app.callback())
