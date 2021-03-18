@@ -1,12 +1,13 @@
 import "./App.scss";
 import React from "react";
+import { } from "@alrale";
 import SortableTable from "./components/Table/index";
 import HeadInfo from "./components/HeadInfo/index";
 import RouterForm from "./components/Router/index";
 import TagsGroup from "./components/TagsGroup";
 import { headerInfos } from "./utils/data";
-import { Button, Affix } from "antd";
-import { AlignCenterOutlined } from "@ant-design/icons";
+import { Button, Upload } from "antd";
+import { AlignCenterOutlined, UploadOutlined } from "@ant-design/icons";
 
 export default class App extends React.Component {
   state = {};
@@ -20,7 +21,9 @@ export default class App extends React.Component {
       tags: [{ name: 'Default', focus: true, visible: false }],
       routerValues: null,
       isRouterEdit: false,
-      editRouterIndex: null
+      editRouterIndex: null,
+      loading: false,
+      host: ''
     };
   }
 
@@ -120,19 +123,57 @@ export default class App extends React.Component {
     element.click()
   }
 
+  handleUpload(info) {
+    this.setState({ loading: true })
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === 'done') {
+      this.setState({ loading: false })
+      const { file } = info
+      const { ok, data } = file.response
+      if (ok) {
+        const { swagger, info, schemes, paths = [] } = data;
+        paths.forEach(router => {
+          const { path, method, tag, summary } = router
+        })
+        this.setState({ infos: { swagger, info, schemes }, list: [] }, () => {
+          this.setState()
+        })
+        // this.setRows
+      }
+    } else if (info.file.status === 'error') {
+      console.log('error')
+    }
+  }
+
+  async init() {
+    const { ok, data } = (await fetch('http://localhost:8090/port')).json()
+    if (ok) this.setState({ host: `http://localhost:${data}` })
+  }
+
+  componentDidMount() {
+    this.init()
+  }
+
   render() {
     return (
       <div className="container">
         <div className="columns">
-          <Affix style={{ position: 'fixed', top: 25, right: 25 }}>
-            <Button type="primary" danger>Sync</Button>
-            <Button type="primary" style={{ marginLeft: 20 }} onClick={() => this.handleDownload()}>Download</Button>
-          </Affix>
+          <div style={{ display: 'flex', position: 'fixed', top: 25, right: 25 }}>
+            <Upload onPreview name="file" method="POST" action={`${this.state.host}/upload`} onChange={(info) => this.handleUpload(info)}>
+              <Button disabled={this.state.loading} type="primary" icon={<UploadOutlined />}>Upload</Button>
+            </Upload>
+            <Button disabled={this.state.loading} type="primary" style={{ marginLeft: 20 }} danger>Sync</Button>
+            <Button disabled={this.state.loading} type="primary" style={{ marginLeft: 20 }} onClick={() => this.handleDownload()}>Download</Button>
+          </div>
           <HeadInfo
+            loading={this.state.loading}
             infos={this.state.infos}
             setInfos={(infos) => this.setInfos(infos)}
           />
           <TagsGroup
+            loading={this.state.loading}
             tags={this.state.tags}
             setTags={(tags) => this.setTags(tags)}
             updateTagsStatus={(index) => this.updateTagsStatus(index)}
@@ -140,10 +181,12 @@ export default class App extends React.Component {
             tagVisibleChange={(index, bool) => this.tagVisibleChange(index, bool)}
           />
           <SortableTable
+            loading={this.state.loading}
             updateRows={(list) => this.updateRows(list)}
             list={this.state.list}
           />
           <Button
+            disabled={this.state.loading}
             size="small"
             type="ghost"
             icon={

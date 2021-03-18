@@ -52,6 +52,7 @@ export default class TagsGroup extends React.Component {
                             onVisibleChange={(bool) => this.props.tagVisibleChange(index, bool)}
                         >
                             <Button
+                                disabled={this.props.loading}
                                 type={tag.focus && 'primary'}
                                 size="small"
                                 style={{ marginRight: 5 }}
@@ -72,12 +73,14 @@ export default class TagsGroup extends React.Component {
                                 style={{ width: 80, marginRight: 5 }}
                             />
                             <Button
+                                disabled={this.props.loading}
                                 size="small"
                                 onClick={() => this.handleOk()}
                                 icon={<CheckSquareOutlined style={{ color: '#F56C6C' }}
                                 />} />
                         </> :
                         <Button
+                            disabled={this.props.loading}
                             size="small"
                             onClick={() => this.handleEdit()}
                             icon={<BorderLeftOutlined style={{ color: '#F56C6C' }}

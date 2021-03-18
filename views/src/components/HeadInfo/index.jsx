@@ -19,7 +19,7 @@ export default class HeadInfo extends React.Component {
             <div className="header-info-container">
                 <div className="header-title-container">
                     <Title level={2}>{info.title}</Title>
-                    <Button size="small" className="btn" onClick={() => this.setState({ isShow: true })} icon={<LeftSquareOutlined />} />
+                    <Button disabled={this.props.loading} size="small" className="btn" onClick={() => this.setState({ isShow: true })} icon={<LeftSquareOutlined />} />
                 </div>
                 <Text type="secondary">Version: {info.version}</Text>
                 <br />
