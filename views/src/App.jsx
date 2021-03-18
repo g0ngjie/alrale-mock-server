@@ -183,6 +183,7 @@ export default class App extends React.Component {
       }
     } else if (info.file.status === 'error') {
       console.log('error')
+      this.setState({ loading: false })
     }
   }
 
@@ -195,6 +196,7 @@ export default class App extends React.Component {
               beforeUpload={(file) => this.handleBeforeUpload(file)}
               name="file"
               method="POST"
+              previewFile={() => Promise.resolve(false)}
               action={`${this.state.host}/upload`}
               onChange={(info) => this.handleUpload(info)}
             >
@@ -206,7 +208,7 @@ export default class App extends React.Component {
             </Upload>
             {/* <Button disabled={this.state.loading} type="primary" style={{ marginLeft: 20 }} danger>Sync</Button> */}
             <Button
-              disabled={this.state.loading}
+              disabled={this.state.loading || this.state.list.length === 0}
               type="primary"
               style={{ marginLeft: 10 }}
               icon={<DownloadOutlined />}
