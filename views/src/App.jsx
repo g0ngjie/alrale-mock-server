@@ -120,14 +120,15 @@ export default class App extends React.Component {
     const { infos, list, host } = this.state
     const swagger = { ...infos, host: `${host}${infos.host}`, paths: {} }
     list.forEach(row => {
-      const { path, method, tag, summary } = row
+      const { path, method, tag, summary, parameters, responses, condition } = row
       swagger.paths[path] = {
         [method]: {
           summary,
           tags: [tag],
           produces: ["application/json"],
-          parameters: [{}],
-          responses: {}
+          parameters,
+          responses,
+          condition
         }
       }
     })
