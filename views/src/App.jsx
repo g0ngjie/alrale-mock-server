@@ -1,6 +1,7 @@
 import "./App.css";
 import React from "react";
-import { uniqueId, stringExtension } from "@alrale/common-lib";
+import { uniqueId, stringExtension, randomString } from "@alrale/common-lib";
+import { simpleDownload } from "@alrale/downloads";
 import SortableTable from "./components/Table/index";
 import HeadInfo from "./components/HeadInfo/index";
 import RouterForm from "./components/Router/index";
@@ -130,11 +131,7 @@ export default class App extends React.Component {
         }
       }
     })
-    const element = document.createElement('a')
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,module.exports = ' + JSON.stringify(swagger, null, '\t'))
-    element.setAttribute('download', 'mock.js')
-    element.style.display = 'none'
-    element.click()
+    simpleDownload(`module.exports = ${JSON.stringify(swagger, null, '\t')}`, `${randomString(5).toLowerCase()}_mock.js`)
   }
 
   handleBeforeUpload(file) {
