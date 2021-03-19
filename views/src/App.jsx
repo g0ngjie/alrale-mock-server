@@ -67,7 +67,7 @@ export default class App extends React.Component {
       const newList = _list.map(item => {
         return {
           ...item,
-          index: item.index + Math.random().toString().substr(2, 3)
+          index: uniqueId()
         }
       })
       this.setState({ list: newList, cacheTables: newList });

@@ -1,11 +1,15 @@
 import React from "react";
 import { Form, Input, Modal, Radio, Select } from "antd";
 import { uniqueId } from "@alrale/common-lib";
+import CodeBox from "./CodeBox";
 
 export default class RouterForm extends React.Component {
 
   state = {
-    form: React.createRef()
+    form: React.createRef(),
+    parameters: null,
+    responses: null,
+    condition: null
   }
 
   setIsModalVisible(val) {
@@ -15,7 +19,8 @@ export default class RouterForm extends React.Component {
   async handleOk() {
     try {
       const values = await this.state.form.current.validateFields();
-      this.props.setRows({ ...values, index: uniqueId() });
+      const { parameters, responses, condition } = this.state
+      this.props.setRows({ ...values, index: uniqueId(), parameters, responses, condition });
       this.state.form.current.resetFields()
       this.setIsModalVisible(false);
     } catch (err) {
@@ -29,13 +34,19 @@ export default class RouterForm extends React.Component {
 
   static getDerivedStateFromProps(props, state) {
     if (props.isRouterEdit) {
-      const { method, path, tag, summary } = props.routerValues
+      const { method, path, tag, summary, parameters, responses, condition } = props.routerValues
       state.form.current.setFieldsValue({ method, path, tag, summary });
+      return { parameters, responses, condition }
     }
     return null
   }
 
+  handleCodeChange(code, key) {
+    this.setState({ [key]: code })
+  }
+
   render() {
+    const { parameters, responses, condition } = this.props.routerValues || {}
     return (
       <>
         <Modal
@@ -44,6 +55,7 @@ export default class RouterForm extends React.Component {
           visible={this.props.isShow}
           onOk={() => this.handleOk()}
           onCancel={this.handleCancel}
+          width="850px"
         >
           <Form
             ref={this.state.form}
@@ -78,6 +90,15 @@ export default class RouterForm extends React.Component {
             </Form.Item>
             <Form.Item label="概要" name="summary">
               <Input.TextArea placeholder="概要" />
+            </Form.Item>
+            <Form.Item label="Parameters" name="parameters">
+              <CodeBox code={parameters} onChange={(code) => this.handleCodeChange(code, 'parameters')} />
+            </Form.Item>
+            <Form.Item label="Responses" name="responses">
+              <CodeBox code={responses} onChange={(code) => this.handleCodeChange(code, 'responses')} />
+            </Form.Item>
+            <Form.Item label="条件返回" name="condition">
+              <CodeBox code={condition} onChange={(code) => this.handleCodeChange(code, 'condition')} />
             </Form.Item>
           </Form>
         </Modal>
