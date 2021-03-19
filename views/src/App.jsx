@@ -131,7 +131,7 @@ export default class App extends React.Component {
         }
       }
     })
-    simpleDownload(`module.exports = ${JSON.stringify(swagger, null, '\t')}`, `${randomString(5).toLowerCase}_mock.js`)
+    simpleDownload(`module.exports = ${JSON.stringify(swagger, null, '\t')}`, `${randomString(5).toLowerCase()}_mock.js`)
   }
 
   handleBeforeUpload(file) {
