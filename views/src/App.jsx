@@ -25,7 +25,7 @@ export default class App extends React.Component {
       list: [], // table 数据
       cacheTables: [], // 缓存table数据
       tags: [{ name: 'Default', focus: true, visible: false }],
-      routerValues: null,
+      routerValues: {},
       isRouterEdit: false,
       editRouterIndex: null,
       loading: false,
@@ -34,7 +34,9 @@ export default class App extends React.Component {
   }
 
   setModalShow(bool) {
-    this.setState({ isShow: bool, isRouterEdit: false, routerValues: {} });
+    this.setState({ isRouterEdit: false, routerValues: {} }, () => {
+      this.setState({ isShow: bool })
+    });
   }
 
   removeRow(index) {
@@ -58,6 +60,14 @@ export default class App extends React.Component {
     }, () => this.setState({ isShow: true }))
   }
 
+  // 修改row的code
+  updateRowCodeByKey(key, code) {
+    const { routerValues } = this.state
+    routerValues[key] = code
+    routerValues.index = uniqueId()
+    this.setState({ routerValues })
+  }
+
   setRows(row) {
     const { list: _list, isRouterEdit, editRouterIndex } = this.state;
     row.remove = (index) => this.removeRow(index)
@@ -70,7 +80,7 @@ export default class App extends React.Component {
           index: uniqueId()
         }
       })
-      this.setState({ list: newList, cacheTables: newList });
+      this.setState({ list: newList, cacheTables: newList, routerValues: {} });
     } else this.setState({ list: [..._list, row], cacheTables: [..._list, row] });
   }
 
@@ -165,9 +175,12 @@ export default class App extends React.Component {
             const item = paths[path];
             for (const method in item) {
               if (Object.hasOwnProperty.call(item, method)) {
-                const { tags, produces, parameters, responses, summary } = item[method];
+                const { tags, condition, parameters, responses, summary } = item[method];
                 router.summary = summary
                 router.method = method
+                router.condition = condition
+                router.parameters = parameters
+                router.responses = responses
                 router.tag = tags[0]
                 tagList.add(tags[0])
               }
@@ -251,6 +264,7 @@ export default class App extends React.Component {
             isShow={this.state.isShow}
             isRouterEdit={this.state.isRouterEdit}
             routerValues={this.state.routerValues}
+            updateRowCodeByKey={(key, code) => this.updateRowCodeByKey(key, code)}
           />
         </div>
       </div>

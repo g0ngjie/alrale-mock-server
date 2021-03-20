@@ -46,8 +46,21 @@ const columns = [
     dataIndex: "summary",
     ellipsis: true,
   }, {
+    title: '参数',
+    dataIndex: "parameters",
+    ellipsis: true
+  }, {
+    title: '响应',
+    dataIndex: "responses",
+    ellipsis: true
+  }, {
+    title: '条件',
+    dataIndex: "condition",
+    ellipsis: true
+  }, {
     title: 'operation',
     dataIndex: 'operation',
+    width: '110px',
     render: (_, record, index) => {
       return (<>
         <a onClick={() => record.remove(index)} style={{ marginRight: 10, color: '#F56C6C' }} >Delete</a>

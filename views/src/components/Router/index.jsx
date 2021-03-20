@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Input, Modal, Radio, Select } from "antd";
-import { uniqueId, sleep } from "@alrale/common-lib";
+import { sleep, uniqueId } from "@alrale/common-lib";
 import CodeBox from "./CodeBox";
 
 export default class RouterForm extends React.Component {
@@ -19,7 +19,6 @@ export default class RouterForm extends React.Component {
   async handleOk() {
     try {
       const values = await this.state.form.current.validateFields();
-      // const { parameters, responses, condition } = this.state
       this.props.setRows({ ...values, index: uniqueId() });
       this.state.form.current.resetFields()
       this.setIsModalVisible(false);
@@ -29,20 +28,31 @@ export default class RouterForm extends React.Component {
   };
 
   handleCancel = () => {
+    this.state.form.current.resetFields()
     this.setIsModalVisible(false);
   };
 
   static getDerivedStateFromProps(props, state) {
     if (props.isRouterEdit) {
-      const { method, path, tag, summary, parameters, responses, condition } = props.routerValues
-      sleep(300, () => state.form.current.setFieldsValue({ method, path, tag, summary }))
-      return { parameters, responses, condition }
+      const { method, path, tag, summary, parameters = '', responses = '', condition = '' } = props.routerValues
+      sleep(100, () => {
+        state.form.current.setFieldsValue({
+          method,
+          path,
+          tag,
+          summary,
+          parameters,
+          responses,
+          condition
+        })
+      })
+      return state
     }
     return null
   }
 
   handleCodeChange(code, key) {
-    this.setState({ [key]: code })
+    this.props.updateRowCodeByKey(key, code)
   }
 
   render() {
