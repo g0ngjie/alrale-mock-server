@@ -34,7 +34,7 @@ export default class App extends React.Component {
   }
 
   setModalShow(bool) {
-    this.setState({ isShow: bool, isRouterEdit: false, routerValues: null });
+    this.setState({ isShow: bool, isRouterEdit: false, routerValues: {} });
   }
 
   removeRow(index) {
@@ -173,6 +173,8 @@ export default class App extends React.Component {
               }
             }
           }
+          router.remove = (index) => this.removeRow(index)
+          router.edit = (index) => this.editRow(index)
           list.push(router)
         }
         const tags = []

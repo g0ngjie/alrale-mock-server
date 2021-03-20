@@ -1,15 +1,15 @@
 import React from "react";
 import { Form, Input, Modal, Radio, Select } from "antd";
-import { uniqueId } from "@alrale/common-lib";
+import { uniqueId, sleep } from "@alrale/common-lib";
 import CodeBox from "./CodeBox";
 
 export default class RouterForm extends React.Component {
 
-  state = {
-    form: React.createRef(),
-    parameters: null,
-    responses: null,
-    condition: null
+  state = {}
+
+  constructor(props) {
+    super(props)
+    this.state.form = React.createRef()
   }
 
   setIsModalVisible(val) {
@@ -19,8 +19,8 @@ export default class RouterForm extends React.Component {
   async handleOk() {
     try {
       const values = await this.state.form.current.validateFields();
-      const { parameters, responses, condition } = this.state
-      this.props.setRows({ ...values, index: uniqueId(), parameters, responses, condition });
+      // const { parameters, responses, condition } = this.state
+      this.props.setRows({ ...values, index: uniqueId() });
       this.state.form.current.resetFields()
       this.setIsModalVisible(false);
     } catch (err) {
@@ -35,7 +35,7 @@ export default class RouterForm extends React.Component {
   static getDerivedStateFromProps(props, state) {
     if (props.isRouterEdit) {
       const { method, path, tag, summary, parameters, responses, condition } = props.routerValues
-      state.form.current.setFieldsValue({ method, path, tag, summary });
+      sleep(300, () => state.form.current.setFieldsValue({ method, path, tag, summary }))
       return { parameters, responses, condition }
     }
     return null
