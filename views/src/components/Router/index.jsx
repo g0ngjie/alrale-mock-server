@@ -34,7 +34,7 @@ export default class RouterForm extends React.Component {
 
   static getDerivedStateFromProps(props, state) {
     if (props.isRouterEdit) {
-      const { method, path, tag, summary, parameters = '', responses = '', condition = '' } = props.routerValues
+      const { method, path, tag, summary, parameters = '', responses = '' } = props.routerValues
       sleep(100, () => {
         state.form.current.setFieldsValue({
           method,
@@ -43,7 +43,6 @@ export default class RouterForm extends React.Component {
           summary,
           parameters,
           responses,
-          condition
         })
       })
       return state
@@ -56,7 +55,7 @@ export default class RouterForm extends React.Component {
   }
 
   render() {
-    const { parameters, responses, condition } = this.props.routerValues || {}
+    const { parameters, responses } = this.props.routerValues || {}
     return (
       <>
         <Modal
@@ -102,13 +101,10 @@ export default class RouterForm extends React.Component {
               <Input.TextArea placeholder="概要" />
             </Form.Item>
             <Form.Item label="Parameters" name="parameters">
-              <CodeBox code={parameters} onChange={(code) => this.handleCodeChange(code, 'parameters')} />
+              <CodeBox code={parameters} name="parameters" onChange={(code) => this.handleCodeChange(code, 'parameters')} />
             </Form.Item>
             <Form.Item label="Responses" name="responses">
-              <CodeBox code={responses} onChange={(code) => this.handleCodeChange(code, 'responses')} />
-            </Form.Item>
-            <Form.Item label="条件返回" name="condition">
-              <CodeBox code={condition} onChange={(code) => this.handleCodeChange(code, 'condition')} />
+              <CodeBox code={responses} name="responses" onChange={(code) => this.handleCodeChange(code, 'responses')} />
             </Form.Item>
           </Form>
         </Modal>

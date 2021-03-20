@@ -2,21 +2,30 @@ import React from "react";
 import AceEditor from "react-ace";
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools";
 
 export default (props) => {
     const { name, code, onChange } = props;
+    const isJson = ['parameters', 'responses'].includes(name)
+    const mode = isJson ? 'json' : 'javascript'
+    const placeholder = mode.toUpperCase()
+    const value = code ? code : isJson ? '{}' : `let response = {}
+if (condition) {
+    response = { ok: true, data: 'success' }
+}`
+
     return (
         <AceEditor
             width={"100%"}
-            height={"300px"}
-            mode="javascript"
+            height={"200px"}
+            mode={mode}
             theme="monokai"
-            placeholder={"###"}
+            placeholder={placeholder}
             onChange={(value) => onChange(value, name)}
             name={name}
-            value={code || ''}
+            value={value}
             editorProps={{ $blockScrolling: true }}
             fontSize="14px"
             showGutter={true}

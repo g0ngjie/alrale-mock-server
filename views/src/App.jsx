@@ -5,6 +5,7 @@ import { simpleDownload } from "@alrale/downloads";
 import SortableTable from "./components/Table/index";
 import HeadInfo from "./components/HeadInfo/index";
 import RouterForm from "./components/Router/index";
+import Condition from "./components/Router/Condition";
 import TagsGroup from "./components/TagsGroup";
 import { headerInfos } from "./utils/data";
 import { Button, Upload, message } from "antd";
@@ -27,6 +28,7 @@ export default class App extends React.Component {
       tags: [{ name: 'Default', focus: true, visible: false }],
       routerValues: {},
       isRouterEdit: false,
+      isCondition: false,
       editRouterIndex: null,
       loading: false,
       host,
@@ -34,7 +36,7 @@ export default class App extends React.Component {
   }
 
   setModalShow(bool) {
-    this.setState({ isRouterEdit: false, routerValues: {} }, () => {
+    this.setState({ isRouterEdit: false, isCondition: false, routerValues: {} }, () => {
       this.setState({ isShow: bool })
     });
   }
@@ -51,13 +53,13 @@ export default class App extends React.Component {
     this.setState({ list: newList, cacheTables: newList })
   }
 
-  editRow(index) {
+  editRow(index, isCondition = false) {
     const { list } = this.state
     this.setState({
       routerValues: list[index],
-      isRouterEdit: true,
+      isRouterEdit: !isCondition,
       editRouterIndex: index
-    }, () => this.setState({ isShow: true }))
+    }, () => this.setState({ isShow: !isCondition, isCondition }))
   }
 
   // 修改row的code
@@ -69,11 +71,21 @@ export default class App extends React.Component {
   }
 
   setRows(row) {
-    const { list: _list, isRouterEdit, editRouterIndex } = this.state;
+    const { list: _list, isRouterEdit, isCondition, editRouterIndex } = this.state;
     row.remove = (index) => this.removeRow(index)
     row.edit = (index) => this.editRow(index)
+    row.editCondition = (index) => this.editRow(index, true)
     if (isRouterEdit) {
-      _list[editRouterIndex] = row
+      _list[editRouterIndex] = { ..._list[editRouterIndex], ...row }
+      const newList = _list.map(item => {
+        return {
+          ...item,
+          index: uniqueId()
+        }
+      })
+      this.setState({ list: newList, cacheTables: newList, routerValues: {} });
+    } else if (isCondition) {
+      _list[editRouterIndex].condition = row.condition
       const newList = _list.map(item => {
         return {
           ...item,
@@ -188,6 +200,7 @@ export default class App extends React.Component {
           }
           router.remove = (index) => this.removeRow(index)
           router.edit = (index) => this.editRow(index)
+          router.editCondition = (index) => this.editRow(index, true)
           list.push(router)
         }
         const tags = []
@@ -257,12 +270,19 @@ export default class App extends React.Component {
             style={{ marginTop: "20px", width: "50px" }}
           />
           <RouterForm
-            list={this.state.list}
             tags={this.state.tags}
-            setRows={(list) => this.setRows(list)}
+            setRows={(row) => this.setRows(row)}
             setModalShow={(bool) => this.setModalShow(bool)}
             isShow={this.state.isShow}
             isRouterEdit={this.state.isRouterEdit}
+            routerValues={this.state.routerValues}
+            updateRowCodeByKey={(key, code) => this.updateRowCodeByKey(key, code)}
+          />
+          <Condition
+            setRows={(row) => this.setRows(row)}
+            setModalShow={(bool) => this.setModalShow(bool)}
+            isShow={this.state.isCondition}
+            isRouterEdit={this.state.isCondition}
             routerValues={this.state.routerValues}
             updateRowCodeByKey={(key, code) => this.updateRowCodeByKey(key, code)}
           />

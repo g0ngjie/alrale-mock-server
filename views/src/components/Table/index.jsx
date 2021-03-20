@@ -1,11 +1,11 @@
-import { Table, Tag } from "antd";
+import { Table, Tag, Button } from "antd";
 import React from "react";
 import {
   sortableContainer,
   sortableElement,
   sortableHandle,
 } from "react-sortable-hoc";
-import { MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined, DeleteOutlined, EditOutlined, RetweetOutlined } from "@ant-design/icons";
 import arrayMove from "array-move";
 
 const DragHandle = sortableHandle(() => (
@@ -21,6 +21,7 @@ const columns = [
   }, {
     title: "Path",
     dataIndex: "path",
+    ellipsis: true
   }, {
     title: "Method",
     dataIndex: "method",
@@ -60,11 +61,12 @@ const columns = [
   }, {
     title: 'operation',
     dataIndex: 'operation',
-    width: '110px',
+    width: '150px',
     render: (_, record, index) => {
       return (<>
-        <a onClick={() => record.remove(index)} style={{ marginRight: 10, color: '#F56C6C' }} >Delete</a>
-        <a onClick={() => record.edit(index)}>Edit</a>
+        <Button type="text" onClick={() => record.edit(index)} icon={<EditOutlined />} style={{ marginRight: 10, color: '#67C23A' }} ></Button>
+        <Button type="text" onClick={() => record.editCondition(index)} icon={<RetweetOutlined />} style={{ marginRight: 10, color: '#E6A23C' }} ></Button>
+        <Button type="text" onClick={() => record.remove(index)} icon={<DeleteOutlined />} danger></Button>
       </>)
     }
   }
