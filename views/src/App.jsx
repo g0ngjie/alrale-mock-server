@@ -17,9 +17,6 @@ export default class App extends React.Component {
   constructor() {
     super();
 
-    const isDev = process.env.NODE_ENV === 'development'
-    let host = '';
-    if (isDev) host = 'http://localhost:8090'
     this.state = {
       infos: headerInfos,
       isShow: false,
@@ -31,7 +28,6 @@ export default class App extends React.Component {
       isCondition: false,
       editRouterIndex: null,
       loading: false,
-      host,
     };
   }
 
@@ -139,8 +135,8 @@ export default class App extends React.Component {
 
   /**下载 */
   handleDownload() {
-    const { infos, list, host } = this.state
-    const swagger = { ...infos, host: `${host}${infos.host}`, paths: {} }
+    const { infos, list } = this.state
+    const swagger = { ...infos, paths: {} }
     list.forEach(row => {
       const { path, method, tag, summary, parameters, responses, condition } = row
       swagger.paths[path] = {
@@ -178,7 +174,7 @@ export default class App extends React.Component {
       const { file } = info
       const { ok, data } = file.response
       if (ok) {
-        const { swagger, info, schemes, paths = {} } = data;
+        const { swagger, info, schemes, paths = {}, host, prefix } = data;
         const list = [];
         const tagList = new Set()
         for (const path in paths) {
@@ -205,7 +201,7 @@ export default class App extends React.Component {
         }
         const tags = []
         tagList.forEach(tag => tags.push({ name: tag, focus: true, visible: false }))
-        this.setState({ infos: { swagger, info, schemes }, list, tags })
+        this.setState({ infos: { swagger, info, schemes, host, prefix }, list, tags })
       }
     } else if (info.file.status === 'error') {
       console.log('error')
@@ -223,7 +219,7 @@ export default class App extends React.Component {
               name="file"
               method="POST"
               previewFile={() => Promise.resolve(false)}
-              action={`${this.state.host}/upload`}
+              action={`http://${this.state.infos.host}/upload`}
               onChange={(info) => this.handleUpload(info)}
             >
               <Button

@@ -1,5 +1,6 @@
 import React from "react";
 import AceEditor from "react-ace";
+// 这个webpack文件会产生大量的build后的文件
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/mode-json";
@@ -11,10 +12,20 @@ export default (props) => {
     const isJson = ['parameters', 'responses'].includes(name)
     const mode = isJson ? 'json' : 'javascript'
     const placeholder = mode.toUpperCase()
-    const value = code ? code : isJson ? '{}' : `let response = {}
+
+    const value_conf = {
+        parameters: `{
+  "start": "number", // 查询参数 和 类型
+}`,
+        responses: '{}',
+        condition: `let q = query; // get参数
+let b = body; // post参数
 if (condition) {
-    response = { ok: true, data: 'success' }
-}`
+    ctx.body = { ok: true, data: 'success' }
+}
+ctx.body = {}`
+    }
+    const value = code ? code : value_conf[name]
 
     return (
         <AceEditor

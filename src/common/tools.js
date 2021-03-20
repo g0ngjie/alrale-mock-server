@@ -7,16 +7,59 @@ const swaggerJson = require('./swagger.json');
 const { Log } = require('./util');
 
 function createSwaggerJson(files) {
-    const { paths } = files
-    const swaggerJson = files || {}
+    const { paths, host, prefix } = files
+    const swaggerJson = files ? JSON.parse(JSON.stringify(files)) : {}
+    swaggerJson.host = host + prefix || ''
+    delete swaggerJson.prefix
     for (const path in paths) {
         const router = paths[path];
         for (const method in router) {
             const item = router[method]
-            console.log('[debug]item.parameters-> ', item.parameters);
-            console.log('[debug]swaggerJson.paths[path][method]-> ', swaggerJson.paths[path][method]);
-            if (item.parameters) swaggerJson.paths[path][method].parameters = eval("(" + item.parameters + ")")
-            if (item.responses) swaggerJson.paths[path][method].responses = eval("(" + item.responses + ")")
+            if (item.parameters) {
+                // swaggerJson.paths[path][method].parameters = eval("(" + item.parameters + ")")
+                const _parameters = eval("(" + item.parameters + ")")
+                let params;
+                if (method === 'get' || method === 'put') {
+                    params = []
+                    for (const key in _parameters) {
+                        if (Object.hasOwnProperty.call(_parameters, key)) {
+                            const _type = _parameters[key];
+                            params.push({
+                                in: 'query',
+                                name: key,
+                                type: _type,
+                                description: ''
+                            })
+                        }
+                    }
+                } else {
+                    // post
+                    const properties = {}
+                    for (const key in _parameters) {
+                        if (Object.hasOwnProperty.call(_parameters, key)) {
+                            const _type = _parameters[key];
+                            properties[key] = { type: _type, description: '' }
+                        }
+                    }
+                    params = [{
+                        in: 'body',
+                        name: 'body',
+                        required: false,
+                        schema: {
+                            type: 'object',
+                            required: [],
+                            properties,
+                        },
+                        description: ''
+                    }]
+                }
+                swaggerJson.paths[path][method].parameters = params
+            }
+            if (item.responses) swaggerJson.paths[path][method].responses = {
+                '200': {
+                    description: JSON.stringify(eval("(" + item.responses + ")"))
+                }
+            }
         }
     }
     return swaggerJson
@@ -48,11 +91,12 @@ exports.fmtSwaggerJson = async function (filePath) {
             Log.sys('swagger.json 加载成功')
             return
         }
-        const putPath = path.join(process.cwd(), 'mock.js')
-        await createTemplate(path.join(__dirname, 'mock-template.js'), putPath)
-        fsExtra.writeFileSync(publicPath, JSON.stringify(swaggerJson, '', '\t'))
+        // const putPath = path.join(process.cwd(), 'mock.js')
+        // await createTemplate(path.join(__dirname, 'mock-template.js'), putPath)
+        // fsExtra.writeFileSync(publicPath, JSON.stringify(swaggerJson, '', '\t'))
         Log.sys('swagger.json 加载成功')
     } catch (error) {
+        console.log(error)
         Log.sys('swagger.json 加载失败')
         process.exit(1)
     }
@@ -61,33 +105,22 @@ exports.fmtSwaggerJson = async function (filePath) {
 exports.getFileRoutes = function (filePath) {
     const routes = []
     if (filePath) {
-        const paths = require(filePath);
-        for (let i = 0; i < paths.length; i++) {
-            const {
-                path: _path,
-                method: _method,
-                response: _response
-            } = paths[i];
-            routes.push({
-                path: _path,
-                method: _method,
-                response: _response
-            })
-        }
-    }
-    else {
-        const paths = swaggerJson.paths
-        for (const key in paths) {
-            const item = paths[key];
-            if (!item) continue
-            const isPost = 'post' in item;
-            const method = isPost ? 'post' : 'get'
-            const { responses } = item[method];
-            routes.push({
-                path: key,
-                method,
-                response: responses
-            })
+        const { paths, prefix } = require(filePath);
+        for (const path in paths) {
+            const router = paths[path];
+            for (const method in router) {
+                const { condition, parameters, responses } = router[method];
+                const putObj = {
+                    path: `${prefix}${path}`,
+                    method,
+                    response: responses,
+                }
+                if (condition) {
+                    putObj.parameters = parameters
+                    putObj.condition = condition
+                }
+                routes.push(putObj)
+            }
         }
     }
     return routes

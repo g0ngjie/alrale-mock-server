@@ -6,6 +6,7 @@ export const headerInfos = {
         title: "接口文档",
     },
     host: "localhost:8090",
+    prefix: "",
     schemes: [
 		"http"
 	],
