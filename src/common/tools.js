@@ -6,84 +6,20 @@ const fs = require('fs')
 const swaggerJson = require('./swagger.json');
 const { Log } = require('./util');
 
-function createSwaggerJson(files = []) {
-    // 声明
-    const declaration = {
-        swagger: "2.0",
-        info: {
-            description: "mock-server",
-            version: "1.0.0",
-            title: "接口文档"
-        },
-        host: "localhost:8090",
-        schemes: [
-            "http"
-        ],
-    }
-    const _swaggerPaths = {}
-    for (let i = 0; i < files.length; i++) {
-        const {
-            path: _path,
-            summary: _summary,
-            method: _method,
-            parameters: _parameters,
-            response: _response
-        } = files[i];
-        _swaggerPaths[_path] = {
-            [_method]: {
-                summary: _summary,
-                tags: [],
-                produces: ['application/json'],
-                responses: {
-                    '200': {
-                        description: JSON.stringify(_response)
-                    },
-                    '404': {
-                        description: '接口连接错误'
-                    }
-                }
-            }
+function createSwaggerJson(files) {
+    const { paths } = files
+    const swaggerJson = files || {}
+    for (const path in paths) {
+        const router = paths[path];
+        for (const method in router) {
+            const item = router[method]
+            console.log('[debug]item.parameters-> ', item.parameters);
+            console.log('[debug]swaggerJson.paths[path][method]-> ', swaggerJson.paths[path][method]);
+            if (item.parameters) swaggerJson.paths[path][method].parameters = eval("(" + item.parameters + ")")
+            if (item.responses) swaggerJson.paths[path][method].responses = eval("(" + item.responses + ")")
         }
-        let params;
-        if (_method === 'get') {
-            params = []
-            for (const key in _parameters) {
-                if (Object.hasOwnProperty.call(_parameters, key)) {
-                    const _type = _parameters[key];
-                    params.push({
-                        in: 'query',
-                        name: key,
-                        type: _type,
-                        description: ''
-                    })
-                }
-            }
-            _swaggerPaths[_path][_method].parameters = params
-        } else {
-            // post
-            const properties = {}
-            for (const key in _parameters) {
-                if (Object.hasOwnProperty.call(_parameters, key)) {
-                    const _type = _parameters[key];
-                    properties[key] = { type: _type, description: '' }
-                }
-            }
-            params = [{
-                in: 'body',
-                name: 'body',
-                required: false,
-                schema: {
-                    type: 'object',
-                    required: [],
-                    properties,
-                },
-                description: ''
-            }]
-        }
-        _swaggerPaths[_path][_method].parameters = params
     }
-    declaration.paths = _swaggerPaths
-    return declaration
+    return swaggerJson
 }
 
 /**创建模板文件 */
