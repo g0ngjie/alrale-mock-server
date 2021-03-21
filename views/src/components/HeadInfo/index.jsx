@@ -22,8 +22,8 @@ export default class HeadInfo extends React.Component {
                 </div>
                 <Text type="secondary">Version: {info.version}</Text>
                 <br />
-                <Text>[Base URL: {baseUrl}{prefix || ''}]</Text>
-                <Paragraph>{info.description}</Paragraph>
+                <Text type="secondary">Base URL: http://{baseUrl}{prefix || ''}</Text>
+                <Paragraph type="secondary">{info.description}</Paragraph>
                 <InfoForm
                     setModalShow={(bool) => this.setModalShow(bool)}
                     isShow={this.state.isShow}

@@ -1,6 +1,12 @@
 # alrale-mock-server
 cli
 
+- [x] 文档设计
+- [x] mock服务
+- [x] 请求协议GET、POST、PUT、DELETE
+- [ ] 流文件上传、下载
+- [ ] 格式化swagger.json、yap.json
+
 ## Install
 
 ```shell

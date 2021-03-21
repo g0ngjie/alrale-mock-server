@@ -87,7 +87,7 @@ export default class InfoForm extends React.Component {
               <Input placeholder="版本" />
             </Form.Item>
             <Form.Item label="Host" name="host">
-              <Input placeholder="host" />
+              <Input addonBefore="http://" placeholder="host" />
             </Form.Item>
             <Form.Item label="Prefix" name="prefix">
               <Input placeholder="路径请求前缀" />
