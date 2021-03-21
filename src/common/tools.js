@@ -3,6 +3,7 @@
 const fsExtra = require('fs-extra')
 const path = require('path')
 const fs = require('fs')
+const { object } = require('@alrale/common-lib')
 const swaggerJson = require('./swagger.json');
 const { Log } = require('./util');
 
@@ -109,14 +110,13 @@ exports.getFileRoutes = function (filePath) {
         for (const path in paths) {
             const router = paths[path];
             for (const method in router) {
-                const { condition, parameters, responses } = router[method];
+                const { condition, responses } = router[method];
                 const putObj = {
                     path: `${prefix}${path}`,
                     method,
                     response: responses,
                 }
-                if (condition) {
-                    putObj.parameters = parameters
+                if (object.isEmpty(condition)) {
                     putObj.condition = condition
                 }
                 routes.push(putObj)
