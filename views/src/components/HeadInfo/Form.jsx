@@ -15,18 +15,18 @@ export default class InfoForm extends React.Component {
       title,
       version,
       host,
-      prefix,
+      basePath,
       description,
     } = this.state.form.current.getFieldsValue([
       "title",
       "version",
       "host",
       "description",
-      "prefix",
+      "basePath",
     ]);
     this.props.setInfos({
       host,
-      prefix,
+      basePath,
       info: { title, version, description },
     });
     this.setIsModalVisible(false);
@@ -38,12 +38,12 @@ export default class InfoForm extends React.Component {
 
   static getDerivedStateFromProps(props, state) {
     if (props.isShow) {
-      const { host, info, prefix } = props.infos;
+      const { host, info, basePath } = props.infos;
       const { version, title, description } = info;
       setTimeout(() => {
         state.form.current?.setFieldsValue({
           host,
-          prefix,
+          basePath,
           version,
           title,
           description,
@@ -90,7 +90,7 @@ export default class InfoForm extends React.Component {
             <Form.Item label="Host" name="host">
               <Input addonBefore="http://" placeholder="host" />
             </Form.Item>
-            <Form.Item label="Prefix" name="prefix">
+            <Form.Item label="Prefix" name="basePath">
               <Input placeholder="路径请求前缀" />
             </Form.Item>
             <Form.Item label="描述" name="description">

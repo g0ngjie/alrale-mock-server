@@ -13,7 +13,7 @@ export default class HeadInfo extends React.Component {
 
     render() {
         const { infos } = this.props
-        const { info, host: baseUrl, prefix } = infos
+        const { info, host: baseUrl, basePath } = infos
         return (
             <div style={{ width: '100%' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -22,7 +22,7 @@ export default class HeadInfo extends React.Component {
                 </div>
                 <Text type="secondary">Version: {info.version}</Text>
                 <br />
-                <Text type="secondary">Base URL: http://{baseUrl}{prefix || ''}</Text>
+                <Text type="secondary">Base URL: http://{baseUrl}{basePath || ''}</Text>
                 <Paragraph type="secondary">{info.description}</Paragraph>
                 <InfoForm
                     setModalShow={(bool) => this.setModalShow(bool)}

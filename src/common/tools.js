@@ -8,10 +8,8 @@ const swaggerJson = require('./swagger.json');
 const { Log } = require('./util');
 
 function createSwaggerJson(files) {
-    const { paths, host, prefix } = files
+    const { paths } = files
     const swaggerJson = files ? JSON.parse(JSON.stringify(files)) : {}
-    swaggerJson.host = host + prefix || ''
-    delete swaggerJson.prefix
     for (const path in paths) {
         const router = paths[path];
         for (const method in router) {
@@ -106,13 +104,13 @@ exports.fmtSwaggerJson = async function (filePath) {
 exports.getFileRoutes = function (filePath) {
     const routes = []
     if (filePath) {
-        const { paths, prefix } = require(filePath);
+        const { paths, basePath } = require(filePath);
         for (const path in paths) {
             const router = paths[path];
             for (const method in router) {
                 const { condition, responses } = router[method];
                 const putObj = {
-                    path: `${prefix}${path}`,
+                    path: `${basePath}${path}`,
                     method,
                     response: responses,
                 }

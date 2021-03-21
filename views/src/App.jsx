@@ -174,7 +174,7 @@ export default class App extends React.Component {
       const { file } = info
       const { ok, data } = file.response
       if (ok) {
-        const { swagger, info, schemes, paths = {}, host, prefix } = data;
+        const { swagger, info, schemes, paths = {}, host, basePath } = data;
         const list = [];
         const tagList = new Set()
         for (const path in paths) {
@@ -201,7 +201,7 @@ export default class App extends React.Component {
         }
         const tags = []
         tagList.forEach(tag => tags.push({ name: tag, focus: true, visible: false }))
-        this.setState({ infos: { swagger, info, schemes, host, prefix }, list, tags })
+        this.setState({ infos: { swagger, info, schemes, host, basePath }, list, tags })
       }
     } else if (info.file.status === 'error') {
       console.log('error')
