@@ -4,7 +4,6 @@ const fsExtra = require('fs-extra')
 const path = require('path')
 const fs = require('fs')
 const { object } = require('@alrale/common-lib')
-const swaggerJson = require('./swagger.json');
 const { Log } = require('./util');
 
 function createSwaggerJson(files) {
@@ -15,7 +14,6 @@ function createSwaggerJson(files) {
         for (const method in router) {
             const item = router[method]
             if (item.parameters) {
-                // swaggerJson.paths[path][method].parameters = eval("(" + item.parameters + ")")
                 const _parameters = eval("(" + item.parameters + ")")
                 let params;
                 if (method === 'get' || method === 'put') {
@@ -90,9 +88,6 @@ exports.fmtSwaggerJson = async function (filePath) {
             Log.sys('swagger.json 加载成功')
             return
         }
-        // const putPath = path.join(process.cwd(), 'mock.js')
-        // await createTemplate(path.join(__dirname, 'mock-template.js'), putPath)
-        // fsExtra.writeFileSync(publicPath, JSON.stringify(swaggerJson, '', '\t'))
         Log.sys('swagger.json 加载成功')
     } catch (error) {
         console.log(error)
