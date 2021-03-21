@@ -28,7 +28,7 @@ ctx.body = {}`
     const placeholder = code ? code : _conf[name]
     let value = '';
     if (code && typeIs(code) === 'string') value = code
-    else if (code && typeIs('object'))  value = JSON.stringify(code, '', '\n')
+    else if (code && typeIs(code) === 'object')  value = JSON.stringify(code, '', '\n')
 
     return (
         <AceEditor
