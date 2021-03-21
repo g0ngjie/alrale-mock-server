@@ -6,6 +6,7 @@ import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools";
+import { typeIs } from "@alrale/common-lib";
 
 export default (props) => {
     const { name, code, onChange } = props;
@@ -25,7 +26,9 @@ if (condition) {
 ctx.body = {}`
     }
     const placeholder = code ? code : _conf[name]
-    const value = code ? code : ''
+    let value = '';
+    if (code && typeIs(code) === 'string') value = code
+    else if (code && typeIs('object'))  value = JSON.stringify(code, '', '\n')
 
     return (
         <AceEditor

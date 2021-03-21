@@ -105,7 +105,7 @@ exports.getFileRoutes = function (filePath) {
             for (const method in router) {
                 const { condition, responses } = router[method];
                 const putObj = {
-                    path: `${basePath}${path}`,
+                    path: `${basePath || ''}${path}`,
                     method,
                     response: responses,
                 }
@@ -120,7 +120,7 @@ exports.getFileRoutes = function (filePath) {
 }
 
 /**swagger文件转换为js */
-exports.transformSwagger = function(filePath) {
+exports.transformSwagger = function (filePath) {
     const swagger = require(filePath)
     const { paths } = swagger
     for (const path in paths) {
@@ -136,14 +136,21 @@ exports.transformSwagger = function(filePath) {
                     params[key] = type
                 }
             }
+            const res = {}
+            for (const status in responses) {
+                const { description } = responses[status];
+                res[status] = description
+            }
             swagger.paths[path][method] = {
-                summary, tags, produces, parameters: params, responses
+                summary, tags, produces,
+                parameters: JSON.stringify(params, '', '\n'),
+                responses: JSON.stringify(res, '', '\n')
             }
         }
     }
 
     try {
-        const putPath = path.join(process.cwd(), `${randomString(5)}_transform.js`)
+        const putPath = path.join(process.cwd(), `${randomString(5).toLowerCase()}_transform.js`)
         fsExtra.writeFileSync(putPath, 'module.exports = ' + JSON.stringify(swagger, '', '\t'))
     } catch (error) {
         console.log(error);

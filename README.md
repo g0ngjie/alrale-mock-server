@@ -1,11 +1,12 @@
-# alrale-mock-server
+# @alrale/mock-server
 cli
 
 - [x] 文档设计
 - [x] mock服务
 - [x] 请求协议GET、POST、PUT、DELETE
+- [x] 格式化swagger.json
 - [ ] 文件流上传、下载
-- [ ] 格式化swagger.json、yap.json
+- [ ] 格式化yap.json
 
 ## Install
 
@@ -22,6 +23,7 @@ Options:
   -h, --help          display help for command
 
 Commands:
-  start [options]     启动Mock服务
-  design|d [options]  设计器
+  start [options]             启动Mock服务
+  design|d [options]          设计器
+  transform|t <swagger.json>  格式化swagger.json,生成js文件
 ```

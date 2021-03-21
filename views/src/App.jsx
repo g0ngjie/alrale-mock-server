@@ -201,7 +201,7 @@ export default class App extends React.Component {
         }
         const tags = []
         tagList.forEach(tag => tags.push({ name: tag, focus: true, visible: false }))
-        this.setState({ infos: { swagger, info, schemes, host, basePath }, list, tags })
+        this.setState({ infos: { swagger, info, schemes, host, basePath }, list, cacheTables: list, tags })
       }
     } else if (info.file.status === 'error') {
       console.log('error')
