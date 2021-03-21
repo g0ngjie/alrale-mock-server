@@ -3,7 +3,7 @@
 const fsExtra = require('fs-extra')
 const path = require('path')
 const fs = require('fs')
-const { object } = require('@alrale/common-lib')
+const { object, randomString } = require('@alrale/common-lib')
 const { Log } = require('./util');
 
 function createSwaggerJson(files) {
@@ -117,4 +117,35 @@ exports.getFileRoutes = function (filePath) {
         }
     }
     return routes
+}
+
+/**swagger文件转换为js */
+exports.transformSwagger = function(filePath) {
+    const swagger = require(filePath)
+    const { paths } = swagger
+    for (const path in paths) {
+        const router = paths[path]
+        for (const method in router) {
+            const params = {}
+            const { summary, tags, produces, parameters = [], responses } = router[method];
+            for (let i = 0; i < parameters.length; i++) {
+                const { schema } = parameters[i];
+                const { properties } = schema || {}
+                for (const key in properties) {
+                    const { type } = properties[key];
+                    params[key] = type
+                }
+            }
+            swagger.paths[path][method] = {
+                summary, tags, produces, parameters: params, responses
+            }
+        }
+    }
+
+    try {
+        const putPath = path.join(process.cwd(), `${randomString(5)}_transform.js`)
+        fsExtra.writeFileSync(putPath, 'module.exports = ' + JSON.stringify(swagger, '', '\t'))
+    } catch (error) {
+        console.log(error);
+    }
 }
