@@ -66,6 +66,7 @@ export default class InfoForm extends React.Component {
           visible={this.props.isShow}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
+          width="600px"
         >
           <Form
             ref={this.state.form}
