@@ -23,7 +23,7 @@ Options:
   -h, --help          display help for command
 
 Commands:
-  start [options]             启动Mock服务
+  start [options] <file>      启动Mock服务
   design|d [options]          设计器
   transform|t <swagger.json>  格式化swagger.json,生成js文件
 ```
