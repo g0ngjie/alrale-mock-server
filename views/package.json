@@ -5,6 +5,7 @@
   "dependencies": {
     "@alrale/common-lib": "^1.0.44",
     "@alrale/downloads": "^1.0.3",
+    "@ant-design/icons": "^4.6.2",
     "@babel/core": "7.12.3",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
     "@svgr/webpack": "5.5.0",
