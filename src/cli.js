@@ -7,13 +7,10 @@ const open = require('open');
 const tool = require('./common/tools')
 
 /**mock服务启动 */
-function startFunc(cmd) {
-    let file_path;
-    const { port, file } = cmd
-    if (file) {
-        const cwd = process.cwd();
-        file_path = path.join(cwd, file)
-    }
+function startFunc(file, cmd) {
+    const { port } = cmd
+    const cwd = process.cwd();
+    const file_path = path.join(cwd, file)
     require('./app')(port, file_path)
 }
 
@@ -34,9 +31,8 @@ program
     .version(PKG.version, '-v, -version')
 
 program
-    .command('start')
+    .command('start <file>')
     .option('-p, --port <port>', '端口号')
-    .option('-f, --file <file_name>', '加载Mock文件')
     .description('启动Mock服务')
     .action(startFunc);
 
