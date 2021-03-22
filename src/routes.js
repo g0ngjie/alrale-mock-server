@@ -22,8 +22,8 @@ function getRoutes(files) {
   })
 }
 
-module.exports = async (app, files) => {
-  await fmtSwaggerJson(files);
+module.exports = async (app, files, port) => {
+  await fmtSwaggerJson(files, port);
   getRoutes(files)
   app.use(router.routes())
 }

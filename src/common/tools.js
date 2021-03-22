@@ -89,12 +89,13 @@ function createTemplate(src, dst) {
     })
 }
 
-exports.fmtSwaggerJson = async function (filePath) {
+exports.fmtSwaggerJson = async function (filePath, port) {
     const publicPath = path.join(__dirname, '..', '..', 'public', 'swagger', 'swagger.json')
     try {
         if (filePath) {
             const files = require(filePath);
             const swaggerData = createSwaggerJson(files);
+            if (port) swaggerData.host = `localhost:${port}`
             fsExtra.writeFileSync(publicPath, JSON.stringify(swaggerData, '', '\t'))
             Log.sys('swagger.json 加载成功')
             return

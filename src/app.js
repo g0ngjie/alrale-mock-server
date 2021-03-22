@@ -37,15 +37,16 @@ app.use(async (ctx, next) => {
 });
 
 module.exports = async function (p, filePath, isDesign = false) {
+    const PORT = p || 8090
+
     if (!isDesign) {
         app.use(koastatic(path.join(__dirname, '..', 'public', 'swagger')));
-        await routes(app, filePath);
+        await routes(app, filePath, PORT);
     } else {
         app.use(koastatic(path.join(__dirname, '..', 'public', 'design')));
         designRoutes(app)
     }
 
-    const PORT = p || 8090
     http.createServer(app.callback())
         .listen(PORT)
         .on('listening', function () {
