@@ -17,14 +17,17 @@ const columns = [
     title: "#",
     dataIndex: "sort",
     width: 30,
+    fixed: 'left',
     render: () => <DragHandle />,
   }, {
     title: "Path",
     dataIndex: "path",
-    ellipsis: true
+    width: '230px',
+    fixed: 'left',
   }, {
     title: "Method",
     dataIndex: "method",
+    width: '100px',
     render: (method, index) => {
       const _conf = {
         'GET': '#61affe',
@@ -61,6 +64,7 @@ const columns = [
   }, {
     title: 'operation',
     dataIndex: 'operation',
+    fixed: 'right',
     width: '150px',
     render: (_, record, index) => {
       return (<>
@@ -113,6 +117,7 @@ export default class SortableTable extends React.Component {
       <div style={{ width: '100%' }}>
         <Table
           loading={this.props.loading}
+          scroll={{ x: 1300 }}
           pagination={false}
           dataSource={this.props.list}
           columns={columns}
