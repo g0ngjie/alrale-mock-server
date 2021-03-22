@@ -52,10 +52,21 @@ function createSwaggerJson(files) {
                 }
                 swaggerJson.paths[path][method].parameters = params
             }
-            if (item.responses) swaggerJson.paths[path][method].responses = {
-                '200': {
-                    description: item.responses.replace(/(\r\n|\r|\n|\")/g, '')
+            if (item.responses) {
+                if (typeIs(item.responses) === 'object') {
+                    const res = {}
+                    for (const status in item.responses) {
+                        const description = item.responses[status];
+                        res[status] = { description }
+                    }
+                    swaggerJson.paths[path][method].responses = res
                 }
+                else
+                    swaggerJson.paths[path][method].responses = {
+                        '200': {
+                            description: item.responses.replace(/(\r\n|\r|\n|\")/g, '')
+                        }
+                    }
             }
         }
     }
@@ -129,12 +140,16 @@ exports.transformSwagger = function (filePath) {
             const params = {}
             const { summary, tags, produces, parameters = [], responses } = router[method];
             for (let i = 0; i < parameters.length; i++) {
-                const { schema } = parameters[i];
+                const { schema = {}, items = {} } = parameters[i];
                 const { properties } = schema || {}
                 for (const key in properties) {
                     const { type, description } = properties[key];
                     params[key] = type
                     params.description = description
+                }
+                for (const key in items) {
+                    const item = items[key];
+                    params[key] = item
                 }
             }
             const res = {}
@@ -145,7 +160,7 @@ exports.transformSwagger = function (filePath) {
             swagger.paths[path][method] = {
                 summary, tags, produces,
                 parameters: JSON.stringify(params, '', '\n'),
-                responses: JSON.stringify(res, '', '\n')
+                responses: res
             }
         }
     }
