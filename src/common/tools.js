@@ -3,7 +3,7 @@
 const fsExtra = require('fs-extra')
 const path = require('path')
 const fs = require('fs')
-const { object, randomString } = require('@alrale/common-lib')
+const { object, randomString, typeIs } = require('@alrale/common-lib')
 const { Log } = require('./util');
 
 function createSwaggerJson(files) {
@@ -24,8 +24,8 @@ function createSwaggerJson(files) {
                             params.push({
                                 in: 'query',
                                 name: key,
-                                type: _type,
-                                description: ''
+                                type: typeIs(_type),
+                                description: _type + ''
                             })
                         }
                     }
@@ -35,7 +35,7 @@ function createSwaggerJson(files) {
                     for (const key in _parameters) {
                         if (Object.hasOwnProperty.call(_parameters, key)) {
                             const _type = _parameters[key];
-                            properties[key] = { type: _type, description: '' }
+                            properties[key] = { type: typeIs(_type), description: _type + '' }
                         }
                     }
                     params = [{
@@ -54,7 +54,7 @@ function createSwaggerJson(files) {
             }
             if (item.responses) swaggerJson.paths[path][method].responses = {
                 '200': {
-                    description: JSON.stringify(eval("(" + item.responses + ")"))
+                    description: item.responses.replace(/(\r\n|\r|\n|\")/g, '')
                 }
             }
         }
@@ -132,8 +132,9 @@ exports.transformSwagger = function (filePath) {
                 const { schema } = parameters[i];
                 const { properties } = schema || {}
                 for (const key in properties) {
-                    const { type } = properties[key];
+                    const { type, description } = properties[key];
                     params[key] = type
+                    params.description = description
                 }
             }
             const res = {}
