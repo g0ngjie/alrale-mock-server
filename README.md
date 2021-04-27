@@ -6,7 +6,7 @@ cli
 - [x] 请求协议GET、POST、PUT、DELETE
 - [x] 格式化swagger.json
 - [ ] 文件流上传、下载
-- [ ] 格式化yap.json
+- [ ] 格式化yapi.json
 
 ## Install
 
